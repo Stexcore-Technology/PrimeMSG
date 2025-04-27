@@ -1,5 +1,6 @@
 import { component$, Slot } from "@builder.io/qwik";
-import type { RequestHandler } from "@builder.io/qwik-city";
+import { routeLoader$, type RequestHandler } from "@builder.io/qwik-city";
+import initConnection from "~/database/init.connection";
 
 export const onGet: RequestHandler = async ({ cacheControl }) => {
   // Control caching for this request for best performance and to reduce hosting costs:
@@ -12,6 +13,12 @@ export const onGet: RequestHandler = async ({ cacheControl }) => {
   });
 };
 
+const useDatabase = routeLoader$(() => {
+  return initConnection();
+});
+
 export default component$(() => {
+  useDatabase();
+
   return <Slot />;
 });

@@ -1,6 +1,7 @@
 import { component$ } from "@builder.io/qwik";
 import {
   QwikCityProvider,
+  routeLoader$,
   RouterOutlet,
   ServiceWorkerRegister,
 } from "@builder.io/qwik-city";
