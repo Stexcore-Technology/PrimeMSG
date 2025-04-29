@@ -2,6 +2,7 @@ import path from "path";
 import { existsSync, mkdirSync } from "fs";
 import { Sequelize } from "sequelize";
 
+// Validate path data
 if(!existsSync(path.resolve(".data"))) {
     mkdirSync(path.resolve(".data"));
 }

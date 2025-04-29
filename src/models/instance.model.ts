@@ -12,7 +12,7 @@ export interface IInstance {
     /**
      * User Identifier
      */
-    id_user: number,
+    user_id: number,
     /**
      * Instance name
      */
@@ -23,20 +23,36 @@ export interface IInstance {
     platform: string
 }
 
+/**
+ * Instance Model
+ */
 class Instance extends Model<IInstance, Omit<IInstance, "id">> implements IInstance {
+    /**
+     * Identifier Model
+     */
     declare id: number;
-    declare id_user: number;
+    /**
+     * Identifier User
+     */
+    declare user_id: number;
+    /**
+     * Name User
+     */
     declare name: string;
+    /**
+     * Platform
+     */
     declare platform: string;
 }
 
+// Initialize structure model
 Instance.init({
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
     },
-    id_user: {
+    user_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
     },
@@ -53,4 +69,5 @@ Instance.init({
     tableName: "instances"
 });
 
+// Export instance model
 export default Instance;

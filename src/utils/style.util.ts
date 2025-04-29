@@ -1,7 +1,12 @@
 import { CSSProperties } from "@builder.io/qwik";
 
 export default {
-    // utils/styleParser.ts
+
+    /**
+     * Parse a style property
+     * @param style Style property
+     * @returns CSS Properties parsed
+     */
     parse: (style: undefined | string | CSSProperties): CSSProperties | undefined => {
         if(style) {
             let styleObj: { [key: string]: string } = {};

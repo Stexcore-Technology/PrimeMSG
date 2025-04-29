@@ -6,13 +6,13 @@ import connection from "~/database/connection";
  */
 export interface ISession {
     /**
-     * Identifier
+     * Session identifier
      */
     id: number,
     /**
      * User Identifier
      */
-    id_user: number,
+    user_id: number,
     /**
      * Token
      */
@@ -23,20 +23,36 @@ export interface ISession {
     expiration: Date
 }
 
+/**
+ * Session model
+ */
 class Session extends Model<ISession, Omit<ISession, "id" | "token"> | { token?: string }> implements ISession {
+    /**
+     * Session identifier
+     */
     declare id: number;
-    declare id_user: number;
+    /**
+     * User identifier
+     */
+    declare user_id: number;
+    /**
+     * Session token
+     */
     declare token: string;
+    /**
+     * Session expiration
+     */
     declare expiration: Date;
 }
 
+// Initialize structure
 Session.init({
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
     },
-    id_user: {
+    user_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
     },
@@ -54,4 +70,5 @@ Session.init({
     tableName: "sessions"
 });
 
+// Export session
 export default Session;

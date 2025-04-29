@@ -5,12 +5,15 @@ import { UserContext } from "~/contexts/user.context";
 import loadSession from "~/server/loadSession";
 
 /**
- * Request User
+ * Load current session
  */
 export const useUser = routeLoader$(async ({ cookie, redirect }) => {
     return loadSession(cookie, redirect);
 });
 
+/**
+ * Layout dashboard
+ */
 export default component$(() => {
     // User instance
     const user = useUser();
@@ -18,6 +21,7 @@ export default component$(() => {
     // Provider data
     useContextProvider(UserContext, user.value);
 
+    // Apply styles
     useStylesScoped$(/* css */`
         .layout {
             display: flex;

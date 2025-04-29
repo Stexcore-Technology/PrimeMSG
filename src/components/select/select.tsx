@@ -1,20 +1,55 @@
 import { component$, useSignal, useStylesScoped$, JSXOutput } from "@builder.io/qwik";
 import Box from "../box/box";
 
+/**
+ * Custom select
+ */
 type ICustomSelectProps = {
+    /**
+     * Label select
+     */
     label?: string;
-    options: { value: string; label: string; icon?: JSXOutput }[];
+    /**
+     * Options
+     */
+    options: {
+        /**
+         * Value
+         */
+        value: string; 
+        /**
+         * Label
+         */
+        label: string; 
+        /**
+         * Icon output
+         */
+        icon?: JSXOutput
+    }[];
+    /**
+     * Text helper
+     */
     textHelper?: string;
+    /**
+     * Error boolean
+     */
     error?: boolean;
+    /**
+     * Valid boolean
+     */
     valid?: boolean;
 };
 
+/**
+ * Select component
+ */
 export default component$((props: ICustomSelectProps) => {
     const isOpen = useSignal(false);
     const selectedOption = useSignal<string | null>(null);
     const firstOptionRef = useSignal<HTMLButtonElement>();
     const dropdownButtonRef = useSignal<HTMLButtonElement>();
 
+    // Apply styles
     useStylesScoped$(/* css */`
         .dropdown {
             background: none;

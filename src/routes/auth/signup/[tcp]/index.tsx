@@ -9,6 +9,10 @@ import { CheckFillIcon } from "~/icons/icons";
 import { Link } from "@builder.io/qwik-city";
 import { RedirectMessage, ServerError } from "@builder.io/qwik-city/middleware/request-handler";
 
+/**
+ * Validate if error is a ServerError
+ * @param err Error instance
+ */
 function isServerError(err: unknown): err is ServerError {
     return (
       err instanceof ServerError ||
@@ -17,6 +21,10 @@ function isServerError(err: unknown): err is ServerError {
     );
   }
    
+/**
+ * Validate if error if a RedirectMessage
+ * @param err Error instance
+ */
   function isRedirectMessage(err: unknown): err is RedirectMessage {
     return (
       err instanceof RedirectMessage ||
@@ -25,8 +33,12 @@ function isServerError(err: unknown): err is ServerError {
     );
   }
 
-export const onGet: RequestHandler = async ({ params, redirect, error, cookie }) => {
+/**
+ * Validate TCP token
+ */
+export const onGet: RequestHandler = async ({ params, redirect, cookie }) => {
     try {
+        // Get session
         const session = await authService.AuthorizeRegisterByToken(params.tcp);
         
         // Set token session
@@ -36,13 +48,16 @@ export const onGet: RequestHandler = async ({ params, redirect, error, cookie })
         throw redirect(308, "/dashboard");
     }
     catch(err) {
+        // Validate is expired session
         const isExpired = err instanceof authService.SessionExpiredError;
         
         if(!isExpired) {
+            // Validate server Error
             if(isServerError(err)) {
                 throw err;
             }
 
+            // Validate Redirect Error
             if(isRedirectMessage(err)) {
                 throw err;
             }
@@ -55,6 +70,9 @@ export const onGet: RequestHandler = async ({ params, redirect, error, cookie })
     }
 };
 
+/**
+ * TCP Expired Page
+ */
 export default component$(() => {
     return (
         <Box display="flex" justifyContent="center" alignItems="center" width="100%" height="100vh" class="signin">

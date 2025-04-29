@@ -3,6 +3,9 @@ import { Link, useLocation } from "@builder.io/qwik-city";
 import useSidebarMenu, { ISidebarMenu, ISidebarMenuGroup, ISidebarMenuItem, ISidebarMenuSeparator } from "~/hooks/useSidebarMenu";
 import Divider from "../divider/divider";
 
+/**
+ * Menu item component
+ */
 const MenuItem = component$((props: ISidebarMenuItem) => {
     const location = useLocation();
     const style = useStylesScoped$(/*css*/`
@@ -51,12 +54,18 @@ const MenuItem = component$((props: ISidebarMenuItem) => {
     )
 });
 
+/**
+ * Separator component
+ */
 const SeparatorItem = component$((props: ISidebarMenuSeparator) => {
     return (
         <Divider></Divider>
     );
 });
 
+/**
+ * Group component
+ */
 const GroupItem = component$((props: ISidebarMenuGroup) => {
     return (
         <div>
@@ -67,14 +76,21 @@ const GroupItem = component$((props: ISidebarMenuGroup) => {
     );
 });
 
+/**
+ * Item component
+ */
 const Item = component$((props: ISidebarMenu) => {
     switch(props.type) {
+
+        // Menu item
         case "menu":
             return <MenuItem {...props}></MenuItem>
 
+        // Group item
         case "group":
             return <GroupItem {...props}></GroupItem>
 
+        // Separator
         case "separator":
             return <SeparatorItem {...props}></SeparatorItem>
 
@@ -83,7 +99,11 @@ const Item = component$((props: ISidebarMenu) => {
     }
 });
 
+/**
+ * Sidebar component
+ */
 export default component$(() => {
+    // Menu options
     const menu = useSidebarMenu();
 
     return (

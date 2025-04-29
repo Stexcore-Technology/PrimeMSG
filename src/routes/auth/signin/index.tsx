@@ -9,6 +9,9 @@ import { useForm$ } from "~/hooks/useForm";
 import { Form, Link, routeAction$, z, zod$ } from "@builder.io/qwik-city";
 import authService from "~/services/auth.service";
 
+/**
+ * Schema zod
+ */
 const schema = z.object({
     email: z.string()
         .min(1, "Campo requerido")
@@ -18,11 +21,15 @@ const schema = z.object({
         .max(40, "Se requiere máximo 40 carácteres")
 });
 
+/**
+ * User login action
+ */
 const useLoginAction = routeAction$(async (data, {cookie, redirect, fail}) => {
     try {
+        // Get session
         const session = await authService.Login(data.email, data.password);
 
-        // Cookie session
+        // Set cookie session token
         cookie.set("TOKEN_SESSION", session.token, { path: "/" });
         
         throw redirect(307, "/dashboard");
@@ -37,6 +44,9 @@ const useLoginAction = routeAction$(async (data, {cookie, redirect, fail}) => {
     }
 }, zod$(schema));
 
+/**
+ * Singin Page
+ */
 export default component$(() => {
     // User action
     const action = useLoginAction();

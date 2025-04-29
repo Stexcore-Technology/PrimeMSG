@@ -1,6 +1,10 @@
 import { component$, HTMLAttributes, Slot, useStylesScoped$ } from "@builder.io/qwik";
 
+/**
+ * Card content
+ */
 export const CardContent = component$((props: HTMLAttributes<HTMLDivElement>) => {
+
     // Append styles
     useStylesScoped$(`
         div {
@@ -15,7 +19,11 @@ export const CardContent = component$((props: HTMLAttributes<HTMLDivElement>) =>
     );
 });
 
+/**
+ * Card header
+ */
 export const CardHeader = component$((props: HTMLAttributes<HTMLDivElement>) => {
+
     // Append styles
     useStylesScoped$(`
         h2 {
@@ -35,7 +43,11 @@ export const CardHeader = component$((props: HTMLAttributes<HTMLDivElement>) => 
     );
 })
 
+/**
+ * Card component
+ */
 export default component$((props: HTMLAttributes<HTMLDivElement>) => {
+
     // Append styles
     useStylesScoped$(/*css*/`
         div {

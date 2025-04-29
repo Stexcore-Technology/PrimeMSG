@@ -39,6 +39,9 @@ export interface IUserUnauthorized {
     expiration: Date
 }
 
+/**
+ * User unauthorized model
+ */
 class UserUnauthorized extends Model<
     IUserUnauthorized, 
     Omit<IUserUnauthorized, "id" | "try_counts" | "token"> & { 
@@ -46,16 +49,41 @@ class UserUnauthorized extends Model<
         token?: IUserUnauthorized["token"]
     }
 > implements IUserUnauthorized {
+    /**
+     * User Unauthorized Identifier
+     */
     declare id: number;
+    /**
+     * Email identifier
+     */
     declare email: string;
+    /**
+     * Username identifier
+     */
     declare username: string;
+    /**
+     * Password identifier
+     */
     declare password: string;
+    /**
+     * Token validate
+     */
     declare token: string;
+    /**
+     * Pin code
+     */
     declare pin_code: string;
+    /**
+     * Trys counts
+     */
     declare try_counts: number;
+    /**
+     * Expiration
+     */
     declare expiration: Date;
 }
 
+// Initialize structure
 UserUnauthorized.init({
     id: {
         type: DataTypes.INTEGER,
@@ -97,4 +125,5 @@ UserUnauthorized.init({
     tableName: "users_unauthorized"
 });
 
+// export model
 export default UserUnauthorized;

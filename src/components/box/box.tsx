@@ -1,31 +1,103 @@
 import { component$, CSSProperties, IntrinsicElements, Slot } from "@builder.io/qwik";
 import styleUtil from "~/utils/style.util";
 
+/**
+ * Box Props
+ */
 type IBoxProps = IntrinsicElements["div"] & {
+    /**
+     * Flex direction CSS
+     */
     flexDirection?: CSSProperties["flex-direction"],
+    /**
+     * Justify content CSS
+     */
     justifyContent?: CSSProperties["justifyContent"],
+    /**
+     * Align items CSS
+     */
     alignItems?: CSSProperties["alignItems"],
+    /**
+     * Display CSS
+     */
     display?: CSSProperties["display"],
+    /**
+     * Witdh CSS
+     */
     width?: CSSProperties["width"],
+    /**
+     * Height CSS
+     */
     height?: CSSProperties["height"],
-    style?: CSSProperties, // Nota: Ahora es opcional para mayor flexibilidad
+    /**
+     * Style Properties CSS
+     */
+    style?: CSSProperties,
+    /**
+     * Padding CSS
+     */
     p?: number,
+    /**
+     * Margin CSS
+     */
     m?: number,
+    /**
+     * Horizontal padding CSS
+     */
     px?: number,
+    /**
+     * Vertical padding CSS
+     */
     py?: number,
+    /**
+     * Padding top CSS
+     */
     pt?: number,
+    /**
+     * Padding left CSS
+     */
     pl?: number,
+    /**
+     * Padding right CSS
+     */
     pr?: number,
+    /**
+     * Padding bottom CSS
+     */
     pb?: number,
+    /**
+     * Horizontal margin CSS
+     */
     mx?: number,
+    /**
+     * Vertical margin CSS
+     */
     my?: number,
+    /**
+     * Margin top CSS
+     */
     mt?: number,
+    /**
+     * Margin bottom CSS
+     */
     mb?: number,
+    /**
+     * Margin left CSS
+     */
     ml?: number,
+    /**
+     * Margin right CSS
+     */
     mr?: number,
+    /**
+     * Gap CSS
+     */
     gap?: number
 }
 
+/**
+ * Box Component
+ */
 export default component$<IBoxProps>((props) => {
     // Extract styles
     const styles = styleUtil.parse(props.style)
@@ -41,8 +113,11 @@ export default component$<IBoxProps>((props) => {
     const pr = props.pr ?? props.px ?? props.p ?? styles?.paddingRight ?? styles?.padding;
     const pt = props.pt ?? props.py ?? props.p ?? styles?.paddingTop ?? styles?.padding;
     const pb = props.pb ?? props.py ?? props.p ?? styles?.paddingBottom ?? styles?.padding;
+
+    // Gap
     const gap = props.gap ?? props.gap;
 
+    // Others styles
     const flexDirection = props.flexDirection ?? styles?.flexDirection;
     const justifyContent = props.justifyContent ?? styles?.justifyContent;
     const alignItems = props.alignItems ?? styles?.alignItems;
@@ -54,7 +129,7 @@ export default component$<IBoxProps>((props) => {
         <div
             {...props}
             style={{
-                ...styles, // Mantén el estilo original pasado como propiedad
+                ...styles,
                 paddingTop: pt,
                 paddingBottom: pb,
                 paddingLeft: pl,
@@ -70,7 +145,6 @@ export default component$<IBoxProps>((props) => {
                 display: display,
                 width: width,
                 height: height,
-
             }}
         >
             <Slot></Slot>

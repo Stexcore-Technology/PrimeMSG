@@ -23,13 +23,29 @@ export interface IUser {
     password: string,
 }
 
+/**
+ * User Model
+ */
 class User extends Model<IUser, Omit<IUser, "id">> implements IUser {
+    /**
+     * User identifier
+     */
     declare id: number;
+    /**
+     * Email address
+     */
     declare email: string;
+    /**
+     * Username
+     */
     declare username: string;
+    /**
+     * Password
+     */
     declare password: string;
 }
 
+// initialize structure
 User.init({
     id: {
         type: DataTypes.INTEGER,
@@ -54,4 +70,5 @@ User.init({
     tableName: "users"
 });
 
+// export model
 export default User;

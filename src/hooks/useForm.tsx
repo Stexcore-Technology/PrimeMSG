@@ -1,6 +1,12 @@
 import { $, NoSerialize, noSerialize, QRL, QRLEventHandlerMulti, useComputed$, useSignal, useStore, useTask$, useVisibleTask$, implicit$FirstArg } from "@builder.io/qwik";
-import { z, zod$, zodQrl } from "@builder.io/qwik-city";
+import { z } from "@builder.io/qwik-city";
 
+/**
+ * Use form hook
+ * @param schemaStructure Schema structure
+ * @param initialData Initial data
+ * @returns Form hook
+ */
 export function useFormQrl<T extends z.ZodObject<any>>(
   schemaStructure: QRL<T>,
   initialData: z.infer<T>,
@@ -11,34 +17,36 @@ export function useFormQrl<T extends z.ZodObject<any>>(
   const touched = useStore<{ [key in keyof z.infer<T>]?: boolean }>({});
   const valid = useSignal(false);
 
+  // Task to initialize schema value
   useVisibleTask$(async () => {
     const schemaObj = await schemaStructure.resolve();
     schema.value = noSerialize(schemaObj);
   });
   
   useTask$(({ track }) => {
-    // Rastrear cambios en las variables importantes
+    // Track signals
     track(schema);
     track(values);
     track(touched);
   
     if (schema.value) {
-      // Limpiar errores previos
+
+      // Clear errors
       Object.keys(values).forEach((key) => {
         delete errors[key as keyof T];
       });
   
-      // Validar los valores actuales usando Zod
+      // Validate value using zod
       const parsed = schema.value.safeParse(values);
   
       if (parsed.success) {
-        // Si la validación es exitosa, el formulario es válido
+        // form valid!
         valid.value = true;
       } else {
-        // Si hay errores, procesarlos
+        // process errors
         parsed.error.errors.forEach((error) => {
-          const fieldName = error.path[0] as keyof T; // Obtener el nombre del campo
-          errors[fieldName] = error.message; // Asociar el mensaje de error al campo
+          const fieldName = error.path[0] as keyof T; // Get key
+          errors[fieldName] = error.message; // associate error message
         });
   
         valid.value = false;
@@ -71,8 +79,10 @@ export function useFormQrl<T extends z.ZodObject<any>>(
     // Update form values dynamically
     handleChange: onChange$,
 
+    // handle blur
     handleBlur: onBlur$,
 
+    // touched inputs
     touched: touched,
 
     // Check if the form is valid

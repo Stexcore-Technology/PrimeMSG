@@ -1,6 +1,10 @@
 import { component$, HTMLAttributes, useStylesScoped$ } from "@builder.io/qwik";
 
+/**
+ * Divider component
+ */
 export default component$((props: HTMLAttributes<HTMLElement>) => {
+
     // Load styles
     useStylesScoped$(`
         div {

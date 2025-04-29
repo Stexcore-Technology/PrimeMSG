@@ -1,15 +1,21 @@
 import Instance from "~/models/instance.model"
 
+/**
+ * Manage instances service
+ */
 export default new class InstancesService {
 
-    constructor() { }
-
-    public async GetAllInstances(id_user: number) {
+    /**
+     * Get All instances
+     * @param user_id User identifier
+     * @returns All instances
+     */
+    public async GetAllInstances(user_id: number) {
 
         // instances data
         const instances = await Instance.findAll({
             where: {
-                id_user: id_user
+                user_id: user_id
             }
         });
 
@@ -19,24 +25,35 @@ export default new class InstancesService {
         ));;
     }
 
-    public async GetInstanceItem(id_instance: number, id_user: number) {
+    /**
+     * Get instance item
+     * @param instance_id Instance identifier
+     * @param user_id User identifier
+     * @returns Get instance
+     */
+    public async GetInstanceItem(instance_id: number, user_id: number) {
 
         // instances info
         const instanceItem = await Instance.findOne({
             where: {
-                id: id_instance,
-                id_user: id_user,
+                id: instance_id,
+                user_id: user_id,
             }
         });
 
         return instanceItem?.toJSON() ?? null;
     }
 
-    public async CreateInstance(data: { id_user: number, name: string, platform: string }) {
+    /**
+     * Create a new instance item
+     * @param data Value to creation 
+     * @returns Instance Item
+     */
+    public async CreateInstance(data: { user_id: number, name: string, platform: string }) {
 
         // Instance created
         const instance = await Instance.create({
-            id_user: data.id_user,
+            user_id: data.user_id,
             name: data.name,
             platform: data.platform
         });
@@ -44,25 +61,38 @@ export default new class InstancesService {
         return instance;
     }
 
-    public async UpdateInstance(id_instance: number, id_user: number, data: { name: string, platform: string }) {
+    /**
+     * update instance by instance identifier
+     * @param instance_id Instance identifier
+     * @param user_id User owner identifier
+     * @param data Data to update
+     * @returns nCount affected
+     */
+    public async UpdateInstance(instance_id: number, user_id: number, data: { name: string, platform: string }) {
         // Instance updated
         const [countUpdated] = await Instance.update({
             ...data
         }, {
             where: {
-                id: id_instance,
-                id_user: id_user,
+                id: instance_id,
+                user_id: user_id,
             }
         });
 
         return countUpdated;
     }
 
-    public async DeleteInstance(id_instance: number, id_user: number) {
+    /**
+     * Delete instance
+     * @param instance_id Instance identifier
+     * @param user_id User identifier
+     */
+    public async DeleteInstance(instance_id: number, user_id: number) {
+        // Destroy instance
         const countDeleted = await Instance.destroy({
             where: {
-                id: id_instance,
-                id_user: id_user
+                id: instance_id,
+                user_id: user_id
             }
         });
 

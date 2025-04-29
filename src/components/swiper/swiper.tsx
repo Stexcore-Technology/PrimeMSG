@@ -1,15 +1,32 @@
 import { component$, useStylesScoped$, Slot, createContextId, useContext, useContextProvider } from "@builder.io/qwik";
 
+/**
+ * Swiper props
+ */
 type SwiperProps = {
-    currentIndex: number; // Índice controlado por el padre
+    /**
+     * Current index
+     */
+    currentIndex: number;
+    /**
+     * Gap between elements
+     */
     gap?: number;
 };
 
+/**
+ * Swiper context
+ */
 const context = createContextId<{ gap: number }>("prime.msg.components.swiper.context");
 
+/**
+ * Swiper slide component
+ */
 export const SwiperSlide = component$(() => {
+    // Use swiper config
     const swiper = useContext(context);
     
+    // Apply styles
     useStylesScoped$(/*css*/`
         div {
             flex-shrink: 0;
@@ -24,7 +41,12 @@ export const SwiperSlide = component$(() => {
     );
 });
 
+/**
+ * Swiper component
+ */
 export default component$((props: SwiperProps) => {
+
+    // Apply styles
     useStylesScoped$(/* css */`
         .swiper-container {
             overflow: hidden;
@@ -38,6 +60,7 @@ export default component$((props: SwiperProps) => {
         }
     `);
 
+    // Provide context
     useContextProvider(context, {
         gap: props.gap ?? 0
     })

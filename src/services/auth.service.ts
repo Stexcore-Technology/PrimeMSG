@@ -5,22 +5,55 @@ import User from "~/models/user.model";
 import Session from "~/models/session.model";
 import Instance, { IInstance } from "~/models/instance.model";
 
+/**
+ * Session info
+ */
 export interface ISessionInfo {
-    id: number,
+    /**
+     * User identifier
+     */
+    user_id: number,
+    /**
+     * Session identifier
+     */
     session_id: number,
+    /**
+     * Username
+     */
     username:  string,
+    /**
+     * Email address
+     */
     email: string,
+    /**
+     * Token session
+     */
     token: string,
+    /**
+     * Instances user
+     */
     instances: IInstance[]
 }
 
+/**
+ * Authentication service
+ */
 export default new class AuthService {
 
+    /**
+     * Exists another account error
+     */
     readonly ExistsAccountError = class extends Error { };
-    readonly SessionExpiredError = class extends Error { };
-    readonly UserNotFoundError = class extends Error { };
 
-    constructor() { }
+    /**
+     * Session expired error
+     */
+    readonly SessionExpiredError = class extends Error { };
+
+    /**
+     * User not found error
+     */
+    readonly UserNotFoundError = class extends Error { };
 
     /**
      * Create a request to create and send a verification link to email
@@ -36,6 +69,7 @@ export default new class AuthService {
             password: string
         }
     ) {
+        // Find user account
         const userAccount = await User.findOne({
             where: {
                 email: data.email,
@@ -43,18 +77,22 @@ export default new class AuthService {
         });
 
         if(userAccount) {
+            // Throw error
             throw new this.ExistsAccountError("Already exists another account!");
         }
 
+        // Remove another user authentication
         await UserUnauthorized.destroy({
             where: {
                 email: data.email
             }
         });
 
+        // Generate Pin Code
         const pin_code = Math.random().toString().slice(-6);
         const expiration = new Date(Date.now() + 1.44e+7);
         
+        // Create user unauhorized
         const user = await UserUnauthorized.create({
             email: data.email,
             username: data.username,
@@ -63,16 +101,19 @@ export default new class AuthService {
             pin_code: pin_code,
         });
 
+        // sign credentials token
         const token = jwt.sign({ 
-            version: "1.0.0",
-            id: user.id,
-            email: user.email, 
-            token_uuid: user.token 
-        }, 
-        String(process.env.JWT_KEY), {
-            expiresIn: 60 * 60 * 4
-        });
+                version: "1.0.0",
+                id: user.id,
+                email: user.email, 
+                token_uuid: user.token 
+            }, 
+            String(process.env.JWT_KEY), {
+                expiresIn: 60 * 60 * 4
+            }
+        );
 
+        // Send email
         await smtpService.sendMail(data.email, {
             template: "tcp-signin",
             username: data.username,
@@ -88,6 +129,7 @@ export default new class AuthService {
      */
     public async AuthorizeRegisterByToken(token: string) {
 
+        // Decode credentials
         const decoded = jwt.verify(token, String(process.env.JWT_KEY)) as {
             version: string,
             id: number,
@@ -106,6 +148,7 @@ export default new class AuthService {
 
             if(!userAccount) {
 
+                // Find user unauthorized
                 const userUnauthorized = await UserUnauthorized.findOne({
                     where: {
                         id: decoded.id,
@@ -115,11 +158,15 @@ export default new class AuthService {
                 });
     
                 if(userUnauthorized) {
+                    
+                    // create user account
                     const user = await User.create({
                         email: userUnauthorized.email,
                         password: userUnauthorized.password,
                         username: userUnauthorized.username
                     });
+
+                    // destroy user unauthorized
                     await userUnauthorized.destroy();
     
                     // Signin session
@@ -129,6 +176,7 @@ export default new class AuthService {
             
         }
         
+        // Session expired
         throw new this.SessionExpiredError("Session expired!");
     }
 
@@ -140,12 +188,16 @@ export default new class AuthService {
     public async Login(user: User): Promise<ISessionInfo>;
     public async Login(email: string, password: string): Promise<ISessionInfo>;
     public async Login(email: string | User, password?: string): Promise<ISessionInfo> {
+
+        // Declare user var
         let user: User;
 
+        // Validate email instance
         if(email instanceof User) {
             user = email;
         }
         else {
+            // Find user instance
             const userFind = await User.findOne({
                 where: {
                     email: email,
@@ -153,16 +205,23 @@ export default new class AuthService {
                 }
             });
 
+            // User not found?
             if(!userFind) throw new this.UserNotFoundError("User not found!");
+
+            // Set user founded
             user = userFind;
         }
 
+        // Get expiration session
         const expiration = new Date(Date.now() + 2.592e+9); // 2,592e+9 = 30 days
 
+        // Create session instance
         const session = await Session.create({
-            id_user: user.id,
+            user_id: user.id,
             expiration: expiration
         });
+
+        // Sign credentials
         const token = jwt.sign({
             version: "1.0.0",
             session_id: session.id,
@@ -171,6 +230,7 @@ export default new class AuthService {
             expiresIn: 2.592e+9 / 1000
         });
 
+        // Get user session
         return this.getSessionInfo(user, session, token);
     }
 
@@ -181,6 +241,8 @@ export default new class AuthService {
      * @returns Session info
      */
     public async getSessionInfoByToken(token: string) {
+
+        // Session info
         const decoded = jwt.verify(token, String(process.env.JWT_KEY)) as {
             version: string,
             session_id: number,
@@ -188,6 +250,8 @@ export default new class AuthService {
         };
 
         if(decoded.version === "1.0.0") {
+
+            // Session instance
             const session = await Session.findOne({
                 where: {
                     id: decoded.session_id,
@@ -196,9 +260,11 @@ export default new class AuthService {
             });
 
             if(session) {
+
+                // User instance
                 const user = await User.findOne({
                     where: {
-                        id: session.id_user
+                        id: session.user_id
                     }
                 });
 
@@ -208,18 +274,28 @@ export default new class AuthService {
             }
         }
         
+        // Token expired
         throw new this.SessionExpiredError("Session expired!");
     }
 
+    /**
+     * Get session info
+     * @param user User instance
+     * @param session Session instance
+     * @param token Token Session
+     * @returns Session info
+     */
     public async getSessionInfo(user: User, session: Session, token: string): Promise<ISessionInfo> {
+
+        // get instances
         const instances = await Instance.findAll({
             where: {
-                id_user: user.id
+                user_id: user.id
             }
         });
         
         return {
-            id: user.id,
+            user_id: user.id,
             session_id: session.id,
             username: user.username,
             email: user.email,

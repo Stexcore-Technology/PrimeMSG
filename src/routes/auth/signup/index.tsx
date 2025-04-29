@@ -6,9 +6,12 @@ import Card, { CardContent, CardHeader } from "~/components/card/card";
 import { component$ } from "@builder.io/qwik";
 import { MailIcon, SecurityIcon, UserIcon } from "~/icons/icons";
 import { useForm$ } from "~/hooks/useForm";
-import { Form, Link, routeAction$, useNavigate, z, zod$ } from "@builder.io/qwik-city";
+import { Form, Link, routeAction$, z, zod$ } from "@builder.io/qwik-city";
 import authService from "~/services/auth.service";
 
+/**
+ * Schema object
+ */
 const schema = z.object({
     name: z.string()
         .min(4, "Se requiere mínimo 4 carácteres")
@@ -24,6 +27,9 @@ const schema = z.object({
         .max(40, "Se requiere máximo 40 carácteres")
 });
 
+/**
+ * Send TCP code to email to validate new account
+ */
 const useSignupAction = routeAction$(
     async (data, { url, fail, redirect }) => {
         try {
@@ -47,8 +53,10 @@ const useSignupAction = routeAction$(
     zod$(schema)
 );
 
+/**
+ * Signup Page
+ */
 export default component$(() => {
-    const navigate = useNavigate();
     const action = useSignupAction();
     const form = useForm$(schema, {
         name: '',

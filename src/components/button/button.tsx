@@ -1,7 +1,11 @@
 import { component$, IntrinsicElements, Slot, useStylesScoped$ } from "@builder.io/qwik";
 
+/**
+ * Button component
+ */
 export default component$((props: IntrinsicElements["button"]) => {
 
+    // Styles component
     useStylesScoped$(/* css */`
         button {
             background: white;

@@ -5,7 +5,6 @@ interface IThemeContext {
         primary: string,
         secondary: string,
         error: string,
-        
     }
 }
 

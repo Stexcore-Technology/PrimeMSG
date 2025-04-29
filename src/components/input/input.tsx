@@ -1,14 +1,34 @@
-import { component$, IntrinsicHTMLElements, QRLEventHandlerMulti, Slot, useStylesScoped$ } from "@builder.io/qwik";
+import { component$, IntrinsicHTMLElements, Slot, useStylesScoped$ } from "@builder.io/qwik";
 import Box from "../box/box";
 
+/**
+ * Input props
+ */
 type IInputProps = IntrinsicHTMLElements["input"] & {
+    /**
+     * Label input
+     */
     label?: string
+    /**
+     * text helper
+     */
     textHelper?: string
+    /**
+     * Error boolean
+     */
     error?: boolean
+    /**
+     * Valid boolean
+     */
     valid?: boolean
 };
 
-export default component$((props: Omit<IInputProps, "children">) => {    
+/**
+ * Input component
+ */
+export default component$((props: Omit<IInputProps, "children">) => {
+
+    // Apply styles
     useStylesScoped$(/* css */`
         input {
             background: none;
@@ -68,14 +88,14 @@ export default component$((props: Omit<IInputProps, "children">) => {
             padding-left: 2px;
         }
     `);
-    
+
     return (
         <fieldset style={{
             "--helper-color": props.error ? "tomato" : props.valid ? "mediumseagreen" : "var(--text-color)",
             "--focus-color": props.error ? "tomato" : props.valid ? "mediumseagreen" : "dodgerblue",
             "--input-color": props.error ? "tomato" : props.valid ? "mediumseagreen" : "inherit",
         }}>
-            {props.label && 
+            {props.label &&
                 <legend>{props.label}</legend>
             }
             <Box display="flex" alignItems="center" justifyContent="center" mt={-6}>
