@@ -8,6 +8,7 @@ import { MailIcon, SecurityIcon } from "~/icons/icons";
 import { useForm$ } from "~/hooks/useForm";
 import { Form, Link, routeAction$, z, zod$ } from "@builder.io/qwik-city";
 import authService from "~/services/auth.service";
+import useLang from "~/hooks/useLang";
 
 /**
  * Schema zod
@@ -50,6 +51,7 @@ const useLoginAction = routeAction$(async (data, {cookie, redirect, fail}) => {
 export default component$(() => {
     // User action
     const action = useLoginAction();
+    const lang = useLang(["@route-signin"]);
 
     // Use form
     const form = useForm$(schema, {
@@ -60,14 +62,14 @@ export default component$(() => {
     return (
         <Box display="flex" justifyContent="center" alignItems="center" width="100%" height="100vh" class="signin">
             <Card style={{ "min-width": "350px" }}>
-                <CardHeader style={{ textAlign: "center" }}>Iniciar Sesión</CardHeader>
+                <CardHeader style={{ textAlign: "center" }}>{lang["@route-signin"]?.header}</CardHeader>
                 <Divider></Divider>
                 <CardContent>
                     <Form action={action} onSubmitCompleted$={() => {
                         if(action.value?.failed) {
                             form.value.values.password = '';
                             setTimeout(() => {
-                                form.value.errors.email = "Usuario y/o clave invalida!"
+                                form.value.errors.email = lang["@route-signin"]?.form.email.validations.invalid_login
                             }, 100)
                         }
                     }}>
@@ -75,8 +77,8 @@ export default component$(() => {
                             <Input 
                                 type="email" 
                                 name="email"
-                                label="Correo electrónico" 
-                                placeholder="usuario@stexcore.com" 
+                                label={lang["@route-signin"]?.form.email.label}
+                                placeholder={lang["@route-signin"]?.form.email.placeholder}
                                 value={form.value.values.email}
                                 onInput$={form.value.handleChange}
                                 onBlur$={form.value.handleBlur}
@@ -89,8 +91,8 @@ export default component$(() => {
                             <Input 
                                 type="password" 
                                 name="password"
-                                label="Contraseña" 
-                                placeholder="Ingrese su contraseña"
+                                label={lang["@route-signin"]?.form.password.label}
+                                placeholder={lang["@route-signin"]?.form.password.placeholder}
                                 value={form.value.values.password}
                                 onInput$={form.value.handleChange}
                                 onBlur$={form.value.handleBlur}
@@ -101,10 +103,12 @@ export default component$(() => {
                                 <SecurityIcon q:slot="start"></SecurityIcon>
                             </Input>
                             <Box mt={10} display="flex" flexDirection="column">
-                                <Button type="submit" disabled={form.value.isInvalid || action.isRunning}>Iniciar sesión</Button>
+                                <Button type="submit" disabled={form.value.isInvalid || action.isRunning}>
+                                    {lang["@route-signin"]?.form.submit}
+                                </Button>
                             </Box>
                             <Box style={{textAlign: "center"}}>
-                                ¿No tienes una cuenta? <Link href="../signup">Regístrate</Link>
+                                {lang["@route-signin"]?.footer.dont_account_question} <Link href="../signup">{lang["@route-signin"]?.footer.register_now}</Link>
                             </Box>
                         </Box>
                     </Form>

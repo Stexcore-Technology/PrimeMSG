@@ -20,7 +20,7 @@ export interface ISessionInfo {
     /**
      * Username
      */
-    username:  string,
+    username: string,
     /**
      * Email address
      */
@@ -76,7 +76,7 @@ export default new class AuthService {
             }
         });
 
-        if(userAccount) {
+        if (userAccount) {
             // Throw error
             throw new this.ExistsAccountError("Already exists another account!");
         }
@@ -91,7 +91,7 @@ export default new class AuthService {
         // Generate Pin Code
         const pin_code = Math.random().toString().slice(-6);
         const expiration = new Date(Date.now() + 1.44e+7);
-        
+
         // Create user unauhorized
         const user = await UserUnauthorized.create({
             email: data.email,
@@ -102,15 +102,15 @@ export default new class AuthService {
         });
 
         // sign credentials token
-        const token = jwt.sign({ 
-                version: "1.0.0",
-                id: user.id,
-                email: user.email, 
-                token_uuid: user.token 
-            }, 
+        const token = jwt.sign({
+            version: "1.0.0",
+            id: user.id,
+            email: user.email,
+            token_uuid: user.token
+        },
             String(process.env.JWT_KEY), {
-                expiresIn: 60 * 60 * 4
-            }
+            expiresIn: 60 * 60 * 4
+        }
         );
 
         // Send email
@@ -129,53 +129,60 @@ export default new class AuthService {
      */
     public async AuthorizeRegisterByToken(token: string) {
 
-        // Decode credentials
-        const decoded = jwt.verify(token, String(process.env.JWT_KEY)) as {
-            version: string,
-            id: number,
-            email: string,
-            token_uuid: string
-        };
+        try {
+            // Decode credentials
+            const decoded = jwt.verify(token, String(process.env.JWT_KEY)) as {
+                version: string,
+                id: number,
+                email: string,
+                token_uuid: string
+            };
 
-        if(decoded.version === "1.0.0") {
+            if (decoded.version === "1.0.0") {
 
-            // Validate if exists account
-            const userAccount = await User.findOne({
-                where: {
-                    email: decoded.email,
-                }
-            });
-
-            if(!userAccount) {
-
-                // Find user unauthorized
-                const userUnauthorized = await UserUnauthorized.findOne({
+                // Validate if exists account
+                const userAccount = await User.findOne({
                     where: {
-                        id: decoded.id,
                         email: decoded.email,
-                        token: decoded.token_uuid
                     }
                 });
-    
-                if(userUnauthorized) {
-                    
-                    // create user account
-                    const user = await User.create({
-                        email: userUnauthorized.email,
-                        password: userUnauthorized.password,
-                        username: userUnauthorized.username
+
+                if (!userAccount) {
+
+                    // Find user unauthorized
+                    const userUnauthorized = await UserUnauthorized.findOne({
+                        where: {
+                            id: decoded.id,
+                            email: decoded.email,
+                            token: decoded.token_uuid
+                        }
                     });
 
-                    // destroy user unauthorized
-                    await userUnauthorized.destroy();
-    
-                    // Signin session
-                    return this.Login(user);
+                    if (userUnauthorized) {
+
+                        // create user account
+                        const user = await User.create({
+                            email: userUnauthorized.email,
+                            password: userUnauthorized.password,
+                            username: userUnauthorized.username
+                        });
+
+                        // destroy user unauthorized
+                        await userUnauthorized.destroy();
+
+                        // Signin session
+                        return this.Login(user);
+                    }
                 }
+
             }
-            
         }
-        
+        catch (err) {
+            if(!(err instanceof jwt.TokenExpiredError)) {
+                throw err;
+            }
+        }
+
         // Session expired
         throw new this.SessionExpiredError("Session expired!");
     }
@@ -193,7 +200,7 @@ export default new class AuthService {
         let user: User;
 
         // Validate email instance
-        if(email instanceof User) {
+        if (email instanceof User) {
             user = email;
         }
         else {
@@ -206,7 +213,7 @@ export default new class AuthService {
             });
 
             // User not found?
-            if(!userFind) throw new this.UserNotFoundError("User not found!");
+            if (!userFind) throw new this.UserNotFoundError("User not found!");
 
             // Set user founded
             user = userFind;
@@ -249,7 +256,7 @@ export default new class AuthService {
             token_uuid: string
         };
 
-        if(decoded.version === "1.0.0") {
+        if (decoded.version === "1.0.0") {
 
             // Session instance
             const session = await Session.findOne({
@@ -259,7 +266,7 @@ export default new class AuthService {
                 }
             });
 
-            if(session) {
+            if (session) {
 
                 // User instance
                 const user = await User.findOne({
@@ -268,12 +275,12 @@ export default new class AuthService {
                     }
                 });
 
-                if(user) {
+                if (user) {
                     return this.getSessionInfo(user, session, token);
                 }
             }
         }
-        
+
         // Token expired
         throw new this.SessionExpiredError("Session expired!");
     }
@@ -293,7 +300,7 @@ export default new class AuthService {
                 user_id: user.id
             }
         });
-        
+
         return {
             user_id: user.id,
             session_id: session.id,
@@ -305,5 +312,5 @@ export default new class AuthService {
             ))
         };
     }
-    
+
 }
