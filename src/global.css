@@ -33,13 +33,14 @@ svg {
 }
 
 body {
+    overflow: hidden;
     color: var(--text-color);
     width: 100%;
     height: 100%;
     min-height: 100vh;
-    background: radial-gradient(circle at bottom left, rgb(3, 16, 60) 0%, rgba(2, 8, 29, 0) 60%) bottom left,
-            radial-gradient(circle at top right, rgb(3, 16, 60) 0%, rgba(2, 8, 29, 0) 60%) top right,
-            rgb(2, 8, 29);
+    background: radial-gradient(circle at bottom left, #29255b 0%, #29255b00 60%) bottom left,
+            radial-gradient(circle at top right, #29255b 0%, #29255b00 60%) top right,
+            #1b1940;
 
     background-size: 800px 800px, 600px 600px, cover;
     background-repeat: no-repeat;

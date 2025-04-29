@@ -4,7 +4,7 @@ import connection from "~/database/connection";
 /**
  * User Interface
  */
-interface IUser {
+export interface IUser {
     /**
      * Identifier
      */
@@ -24,10 +24,10 @@ interface IUser {
 }
 
 class User extends Model<IUser, Omit<IUser, "id">> implements IUser {
-    public id!: number;
-    public email!: string;
-    public username!: string;
-    public password!: string;
+    declare id: number;
+    declare email: string;
+    declare username: string;
+    declare password: string;
 }
 
 User.init({
@@ -42,6 +42,7 @@ User.init({
     },
     email: {
         type: DataTypes.CHAR(40),
+        unique: true,
         allowNull: false
     },
     password: {

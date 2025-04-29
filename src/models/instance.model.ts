@@ -4,7 +4,7 @@ import connection from "~/database/connection";
 /**
  * Instance Interface
  */
-interface IInstance {
+export interface IInstance {
     /**
      * Identifier
      */
@@ -24,10 +24,10 @@ interface IInstance {
 }
 
 class Instance extends Model<IInstance, Omit<IInstance, "id">> implements IInstance {
-    public id!: number;
-    public id_user!: number;
-    public name!: string;
-    public platform!: string;
+    declare id: number;
+    declare id_user: number;
+    declare name: string;
+    declare platform: string;
 }
 
 Instance.init({

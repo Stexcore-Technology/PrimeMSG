@@ -13,7 +13,7 @@ export default component$((props: Omit<IInputProps, "children">) => {
         input {
             background: none;
             border: none;
-            padding: 12px 12px 12px 2px;
+            padding: 12px 12px 12px 12px;
             width: 100%;
             color: var(--text-color)
         }
@@ -62,6 +62,10 @@ export default component$((props: Omit<IInputProps, "children">) => {
 
         .start:not(:empty) {
             margin: 10px
+        }
+
+        .start:not(:empty) ~ input {
+            padding-left: 2px;
         }
     `);
     

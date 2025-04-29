@@ -4,7 +4,7 @@ import connection from "~/database/connection";
 /**
  * Session Interface
  */
-interface ISession {
+export interface ISession {
     /**
      * Identifier
      */
@@ -17,12 +17,17 @@ interface ISession {
      * Token
      */
     token: string,
+    /**
+     * Expiration
+     */
+    expiration: Date
 }
 
-class Session extends Model<ISession, Omit<ISession, "id">> implements ISession {
-    public id!: number;
-    public id_user!: number;
-    public token!: string;
+class Session extends Model<ISession, Omit<ISession, "id" | "token"> | { token?: string }> implements ISession {
+    declare id: number;
+    declare id_user: number;
+    declare token: string;
+    declare expiration: Date;
 }
 
 Session.init({
@@ -40,6 +45,10 @@ Session.init({
         allowNull: false,
         defaultValue: DataTypes.UUIDV4
     },
+    expiration: {
+        type: DataTypes.DATE,
+        allowNull: false
+    }
 }, {
     sequelize: connection,
     tableName: "sessions"

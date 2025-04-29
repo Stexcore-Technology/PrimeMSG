@@ -18,6 +18,7 @@ export function useFormQrl<T extends z.ZodObject<any>>(
   
   useTask$(({ track }) => {
     // Rastrear cambios en las variables importantes
+    track(schema);
     track(values);
     track(touched);
   
@@ -44,11 +45,16 @@ export function useFormQrl<T extends z.ZodObject<any>>(
       }
     }
   });
+
+  useTask$(({ track }) => {
+    track(errors);
+
+    valid.value = !Object.keys(errors).length;
+  });
   
 
   const onChange$: QRLEventHandlerMulti<Event, HTMLInputElement> = $((_ev, currentTarget) => {
     values[currentTarget.name as keyof T] = currentTarget.value as any;
-    console.log(values);
   });
 
   const onBlur$: QRLEventHandlerMulti<FocusEvent, HTMLInputElement> = $((_ev, currentTarget) => {

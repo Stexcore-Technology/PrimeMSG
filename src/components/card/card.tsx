@@ -19,6 +19,9 @@ export const CardHeader = component$((props: HTMLAttributes<HTMLDivElement>) => 
     // Append styles
     useStylesScoped$(`
         h2 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
             padding: 10px;
             margin: 0;
             font-size: 25px;
@@ -34,11 +37,12 @@ export const CardHeader = component$((props: HTMLAttributes<HTMLDivElement>) => 
 
 export default component$((props: HTMLAttributes<HTMLDivElement>) => {
     // Append styles
-    useStylesScoped$(`
+    useStylesScoped$(/*css*/`
         div {
             padding: 10px;
             border-radius: 5px;
-            background-color: rgb(26, 24, 33);
+            background-color: #28264F;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.1)
         }
     `);
     

@@ -6,7 +6,7 @@ import Card, { CardContent, CardHeader } from "~/components/card/card";
 import { component$ } from "@builder.io/qwik";
 import { MailIcon, SecurityIcon, UserIcon } from "~/icons/icons";
 import { useForm$ } from "~/hooks/useForm";
-import { Form, routeAction$, z, zod$ } from "@builder.io/qwik-city";
+import { Form, Link, routeAction$, useNavigate, z, zod$ } from "@builder.io/qwik-city";
 import authService from "~/services/auth.service";
 
 const schema = z.object({
@@ -25,21 +25,30 @@ const schema = z.object({
 });
 
 const useSignupAction = routeAction$(
-    async (data) => {
-        await authService.createRequestToRegister({
-            username: data.name,
-            email: data.email,
-            password: data.password,
-        });
+    async (data, { url, fail, redirect }) => {
+        try {
+            await authService.createRequestToRegister(url.href, {
+                username: data.name,
+                email: data.email,
+                password: data.password,
+            });
 
-        return {
-            success: true
-        };
+            throw redirect(307, "/auth/signup/tcp-sended");
+        }
+        catch(err) {
+            if(err instanceof authService.ExistsAccountError) {
+                return fail(409, {
+                    message: "Already exists another account"
+                });
+            }
+            throw err;
+        }
     }, 
     zod$(schema)
 );
 
 export default component$(() => {
+    const navigate = useNavigate();
     const action = useSignupAction();
     const form = useForm$(schema, {
         name: '',
@@ -54,7 +63,11 @@ export default component$(() => {
                 <CardHeader style={{ textAlign: "center" }}>Registrate</CardHeader>
                 <Divider></Divider>
                 <CardContent>
-                    <Form action={action}>
+                    <Form action={action} onSubmitCompleted$={() => {
+                        if(action.status == 409) {
+                            form.value.errors.email = "Another account is using this email";
+                        }
+                    }}>
                         <Box display="flex" flexDirection="column" gap={20}>
                             <Input 
                                 type="text" 
@@ -113,7 +126,10 @@ export default component$(() => {
                                 <SecurityIcon q:slot="start"></SecurityIcon>
                             </Input>
                             <Box mt={10} display="flex" flexDirection="column">
-                                <Button disabled={form.value.isInvalid}>Crear cuenta</Button>
+                                <Button type="submit" disabled={form.value.isInvalid || action.isRunning}>Crear cuenta</Button>
+                            </Box>
+                            <Box style={{textAlign: "center"}}>
+                                ¿Ya tienes una cuenta? <Link href="../signin">Iniciar sesión</Link>
                             </Box>
                         </Box>
                     </Form>

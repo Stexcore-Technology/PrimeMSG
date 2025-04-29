@@ -4,7 +4,7 @@ import connection from "~/database/connection";
 /**
  * User Interface
  */
-interface IUserUnauthorized {
+export interface IUserUnauthorized {
     /**
      * Identifier
      */
@@ -46,14 +46,14 @@ class UserUnauthorized extends Model<
         token?: IUserUnauthorized["token"]
     }
 > implements IUserUnauthorized {
-    public id!: number;
-    public email!: string;
-    public username!: string;
-    public password!: string;
-    public token!: string;
-    public pin_code!: string;
-    public try_counts!: number;
-    public expiration!: Date;
+    declare id: number;
+    declare email: string;
+    declare username: string;
+    declare password: string;
+    declare token: string;
+    declare pin_code: string;
+    declare try_counts: number;
+    declare expiration: Date;
 }
 
 UserUnauthorized.init({

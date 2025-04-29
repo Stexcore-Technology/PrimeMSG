@@ -6,24 +6,46 @@ import Input from "~/components/input/input";
 import Button from "~/components/button/button";
 import { MailIcon, SecurityIcon } from "~/icons/icons";
 import { useForm$ } from "~/hooks/useForm";
-import { z } from "@builder.io/qwik-city";
+import { Form, Link, routeAction$, z, zod$ } from "@builder.io/qwik-city";
+import authService from "~/services/auth.service";
+
+const schema = z.object({
+    email: z.string()
+        .min(1, "Campo requerido")
+        .email("Debe ser un correo electrónico válido"),
+    password: z.string()
+        .min(8, "Se requiere mínimo 8 carácteres")
+        .max(40, "Se requiere máximo 40 carácteres")
+});
+
+const useLoginAction = routeAction$(async (data, {cookie, redirect, fail}) => {
+    try {
+        const session = await authService.Login(data.email, data.password);
+
+        // Cookie session
+        cookie.set("TOKEN_SESSION", session.token, { path: "/" });
+        
+        throw redirect(307, "/dashboard");
+    }
+    catch(err) {
+        if(err instanceof authService.UserNotFoundError) {
+            return fail(404, {
+                message: "Usuario y/o clave inválida",
+            });
+        }
+        else throw err;
+    }
+}, zod$(schema));
 
 export default component$(() => {
+    // User action
+    const action = useLoginAction();
 
     // Use form
-    const form = useForm$(
-        z.object({
-            email: z.string()
-                .min(1, "Campo requerido")
-                .email("Debe ser un correo electrónico válido"),
-            password: z.string()
-                .min(8, "Se requiere mínimo 8 carácteres")
-                .max(40, "Se requiere máximo 40 carácteres")
-        }), {
-            email: '',
-            password: ''
-        }
-    );
+    const form = useForm$(schema, {
+        email: '',
+        password: ''
+    });
 
     return (
         <Box display="flex" justifyContent="center" alignItems="center" width="100%" height="100vh" class="signin">
@@ -31,7 +53,14 @@ export default component$(() => {
                 <CardHeader style={{ textAlign: "center" }}>Iniciar Sesión</CardHeader>
                 <Divider></Divider>
                 <CardContent>
-                    <form>
+                    <Form action={action} onSubmitCompleted$={() => {
+                        if(action.value?.failed) {
+                            form.value.values.password = '';
+                            setTimeout(() => {
+                                form.value.errors.email = "Usuario y/o clave invalida!"
+                            }, 100)
+                        }
+                    }}>
                         <Box display="flex" flexDirection="column" gap={20}>
                             <Input 
                                 type="email" 
@@ -62,10 +91,13 @@ export default component$(() => {
                                 <SecurityIcon q:slot="start"></SecurityIcon>
                             </Input>
                             <Box mt={10} display="flex" flexDirection="column">
-                                <Button disabled={form.value.isInvalid}>Iniciar sesión</Button>
+                                <Button type="submit" disabled={form.value.isInvalid || action.isRunning}>Iniciar sesión</Button>
+                            </Box>
+                            <Box style={{textAlign: "center"}}>
+                                ¿No tienes una cuenta? <Link href="../signup">Regístrate</Link>
                             </Box>
                         </Box>
-                    </form>
+                    </Form>
                 </CardContent>
             </Card>
         </Box>
