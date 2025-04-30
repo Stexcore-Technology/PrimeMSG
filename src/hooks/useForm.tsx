@@ -7,29 +7,22 @@ import { z } from "@builder.io/qwik-city";
  * @param initialData Initial data
  * @returns Form hook
  */
-export function useFormQrl<T extends z.ZodObject<any>>(
-  schemaStructure: QRL<T>,
+export function useForm<T extends z.ZodObject<any>>(
   initialData: z.infer<T>,
+  schema?: NoSerialize<T> | undefined,
 ) {
-  const schema = useSignal<NoSerialize<T>>();
   const values = useStore<z.infer<T>>(initialData);
   const errors = useStore<{ [key in keyof z.infer<T>]?: string }>({});
   const touched = useStore<{ [key in keyof z.infer<T>]?: boolean }>({});
   const valid = useSignal(false);
-
-  // Task to initialize schema value
-  useVisibleTask$(async () => {
-    const schemaObj = await schemaStructure.resolve();
-    schema.value = noSerialize(schemaObj);
-  });
   
   useTask$(({ track }) => {
     // Track signals
-    track(schema);
+    track(() => schema);
     track(values);
     track(touched);
   
-    if (schema.value) {
+    if (schema) {
 
       // Clear errors
       Object.keys(values).forEach((key) => {
@@ -37,7 +30,7 @@ export function useFormQrl<T extends z.ZodObject<any>>(
       });
   
       // Validate value using zod
-      const parsed = schema.value.safeParse(values);
+      const parsed = schema.safeParse(values);
   
       if (parsed.success) {
         // form valid!
@@ -93,4 +86,4 @@ export function useFormQrl<T extends z.ZodObject<any>>(
   }));
 }
 
-export const useForm$ = implicit$FirstArg(useFormQrl);
+// export const useForm$ = implicit$FirstArg(useFormQrl);

@@ -1,26 +1,31 @@
-import { component$ } from "@builder.io/qwik";
+import { component$, noSerialize, NoSerialize, useSignal, useVisibleTask$ } from "@builder.io/qwik";
 import Card, { CardContent, CardHeader } from "~/components/card/card";
 import Box from "~/components/box/box";
 import Divider from "~/components/divider/divider";
 import Input from "~/components/input/input";
 import Button from "~/components/button/button";
 import { MailIcon, SecurityIcon } from "~/icons/icons";
-import { useForm$ } from "~/hooks/useForm";
+import { useForm } from "~/hooks/useForm";
 import { Form, Link, routeAction$, z, zod$ } from "@builder.io/qwik-city";
 import authService from "~/services/auth.service";
 import useLang from "~/hooks/useLang";
+import getCurrentLang from "~/server/currentLang";
+import { ILang } from "~/types/lang";
+import LangButton from "~/components/lang-button/lang-button";
 
 /**
  * Schema zod
  */
-const schema = z.object({
-    email: z.string()
-        .min(1, "Campo requerido")
-        .email("Debe ser un correo electrónico válido"),
-    password: z.string()
-        .min(8, "Se requiere mínimo 8 carácteres")
-        .max(40, "Se requiere máximo 40 carácteres")
-});
+const makeSchema = function(lang: { "@route-signin"?: ILang["@route-signin"] | undefined }) {
+    return z.object({
+        email: z.string()
+            .min(1, lang["@route-signin"]?.form.email.validations.required)
+            .email(lang["@route-signin"]?.form.email.validations.email),
+        password: z.string()
+            .min(8, lang["@route-signin"]?.form.password.validations.min)
+            .max(40, lang["@route-signin"]?.form.password.validations.max)
+    });
+};
 
 /**
  * User login action
@@ -43,7 +48,10 @@ const useLoginAction = routeAction$(async (data, {cookie, redirect, fail}) => {
         }
         else throw err;
     }
-}, zod$(schema));
+}, zod$((_, ev) => {
+    const lang = getCurrentLang(ev);
+    return makeSchema(lang);
+}));
 
 /**
  * Singin Page
@@ -51,17 +59,25 @@ const useLoginAction = routeAction$(async (data, {cookie, redirect, fail}) => {
 export default component$(() => {
     // User action
     const action = useLoginAction();
+    const schema = useSignal<NoSerialize<ReturnType<typeof makeSchema>>>();
     const lang = useLang(["@route-signin"]);
 
     // Use form
-    const form = useForm$(schema, {
+    const form = useForm({
         email: '',
         password: ''
+    }, schema.value);
+
+    useVisibleTask$(({track}) => {
+        track(lang);
+
+        schema.value = noSerialize(makeSchema(lang));
     });
 
     return (
         <Box display="flex" justifyContent="center" alignItems="center" width="100%" height="100vh" class="signin">
             <Card style={{ "min-width": "350px" }}>
+                <LangButton></LangButton>
                 <CardHeader style={{ textAlign: "center" }}>{lang["@route-signin"]?.header}</CardHeader>
                 <Divider></Divider>
                 <CardContent>

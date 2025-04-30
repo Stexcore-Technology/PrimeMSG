@@ -24,7 +24,7 @@ export default new class LangService {
         }
     }
 
-    public getPreferredLanguage(acceptLanguage: string): string {
+    public getPreferredLanguage(acceptLanguage: string): ILangType {
         if (!acceptLanguage) return "en"; // Idioma predeterminado
       
         // Dividir el encabezado en idiomas y prioridades
@@ -37,7 +37,7 @@ export default new class LangService {
         languages.sort((a, b) => b.priority - a.priority);
       
         // Retornar solo el idioma principal
-        return languages[0]?.language || "en";
+        return (languages[0]?.language || "en") as ILangType;
     }
     
 }

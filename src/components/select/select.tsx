@@ -38,6 +38,10 @@ type ICustomSelectProps = {
      * Valid boolean
      */
     valid?: boolean;
+    /**
+     * Default value
+     */
+    defaultValue?: string
 };
 
 /**
@@ -45,7 +49,7 @@ type ICustomSelectProps = {
  */
 export default component$((props: ICustomSelectProps) => {
     const isOpen = useSignal(false);
-    const selectedOption = useSignal<string | null>(null);
+    const selectedOption = useSignal<string | null>(props.defaultValue ?? null);
     const firstOptionRef = useSignal<HTMLButtonElement>();
     const dropdownButtonRef = useSignal<HTMLButtonElement>();
 
