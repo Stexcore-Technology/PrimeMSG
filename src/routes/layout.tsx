@@ -1,11 +1,19 @@
-import { component$, Slot } from "@builder.io/qwik";
+import { component$, Slot, useContextProvider } from "@builder.io/qwik";
 import { ILangType } from "~/types/lang";
 import { routeLoader$, type RequestHandler } from "@builder.io/qwik-city";
 import langService from "~/services/lang.service";
 import initConnection from "~/database/init.connection";
+import currentSession from "~/server/currentSession";
+import { SessionContext } from "~/contexts/session.context";
 
+/**
+ * Languages
+ */
 const languages: ILangType[] = ["es", "en"];
 
+/**
+ * Handle current language
+ */
 export const onRequest: RequestHandler = async ({ request, redirect, url, params }) => {
 
   // Validate current lang  
@@ -19,6 +27,9 @@ export const onRequest: RequestHandler = async ({ request, redirect, url, params
   }
 };
 
+/**
+ * Append cache control
+ */
 export const onGet: RequestHandler = async ({ cacheControl }) => {
   
   // Control caching for this request for best performance and to reduce hosting costs:
@@ -31,12 +42,24 @@ export const onGet: RequestHandler = async ({ cacheControl }) => {
   });
 };
 
-const useDatabase = routeLoader$(() => {
-    return initConnection();
+/**
+ * Initialize database connection and get current session
+ */
+const useInformation = routeLoader$(async ({cookie}) => {
+    await initConnection();
+
+    return currentSession(cookie);
 });
 
+/**
+ * Layout ROOT
+ */
 export default component$(() => {
-    useDatabase();
+  // Initialize database connection!
+  const session = useInformation();
+
+  // Provider data
+  useContextProvider(SessionContext, session.value);
     
   return <Slot />;
 });

@@ -3,7 +3,7 @@ import { component$, IntrinsicElements, Slot, useStylesScoped$ } from "@builder.
 /**
  * Button component
  */
-export default component$((props: IntrinsicElements["button"]) => {
+export default component$((props: IntrinsicElements["button"] & { defaultDisabled?: boolean }) => {
 
     // Styles component
     useStylesScoped$(/* css */`

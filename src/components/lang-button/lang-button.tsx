@@ -1,19 +1,18 @@
 import { component$, useContext } from "@builder.io/qwik";
 import useLang from "~/hooks/useLang";
-import { ILangType } from "~/types/lang";
+import { ILang, ILangType } from "~/types/lang";
 import Select from "../select/select";
-import langContext from "~/contexts/lang.context";
+import { useLocation } from "@builder.io/qwik-city";
 
 export default component$(() => {
-    const context = useContext(langContext);
-
-    console.log(
-        JSON.stringify(context.langType)
-    )
+    const location = useLocation();
+    const lang = useLang(["@component-lang-button"]);
     
     return (
         <Select
-            defaultValue={context.langType}
+            label={lang["@component-lang-button"]}
+            defaultValue={location.params.lang}
+            onSelect$={(value) => lang.changeLang(value as keyof ILang)}
             options={[
                 {
                     value: "es",

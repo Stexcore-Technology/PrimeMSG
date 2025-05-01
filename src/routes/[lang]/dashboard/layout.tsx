@@ -1,25 +1,10 @@
-import { component$, Slot, useContextProvider, useStylesScoped$ } from "@builder.io/qwik";
-import { routeLoader$ } from "@builder.io/qwik-city";
+import { component$, Slot, useStylesScoped$ } from "@builder.io/qwik";
 import Sidebar from "~/components/sidebar/sidebar";
-import { UserContext } from "~/contexts/user.context";
-import loadSession from "~/server/loadSession";
-
-/**
- * Load current session
- */
-export const useUser = routeLoader$(async ({ cookie, redirect }) => {
-    return loadSession(cookie, redirect);
-});
 
 /**
  * Layout dashboard
  */
 export default component$(() => {
-    // User instance
-    const user = useUser();
-
-    // Provider data
-    useContextProvider(UserContext, user.value);
 
     // Apply styles
     useStylesScoped$(/* css */`

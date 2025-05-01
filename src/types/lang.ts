@@ -290,6 +290,10 @@ export interface ILangLayoutDashboard {
  */
 export interface ILang {
     /**
+     * Components
+     */
+    "@component-lang-button": string,
+    /**
      * Route login --> /auth/signin
      */
     "@route-signin": ILangRouteLogin,

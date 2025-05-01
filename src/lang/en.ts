@@ -1,6 +1,7 @@
 import { ILang } from "~/types/lang";
 
 const lang: ILang = {
+    "@component-lang-button": "Language",
     "@route-signin": {
         header: "Log In",
         form: {

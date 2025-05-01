@@ -1,4 +1,4 @@
-import { component$, useSignal, useStylesScoped$, JSXOutput } from "@builder.io/qwik";
+import { component$, useSignal, useStylesScoped$, JSXOutput, QRL, useComputed$ } from "@builder.io/qwik";
 import Box from "../box/box";
 
 /**
@@ -42,6 +42,10 @@ type ICustomSelectProps = {
      * Default value
      */
     defaultValue?: string
+    /**
+     * change selected
+     */
+    onSelect$?: QRL<(value: string) => void>
 };
 
 /**
@@ -53,6 +57,10 @@ export default component$((props: ICustomSelectProps) => {
     const firstOptionRef = useSignal<HTMLButtonElement>();
     const dropdownButtonRef = useSignal<HTMLButtonElement>();
 
+    const labelSelected = useComputed$(() => {
+        return props.options.find((optItem) => optItem.value === selectedOption.value);
+    });
+    
     // Apply styles
     useStylesScoped$(/* css */`
         .dropdown {
@@ -80,7 +88,7 @@ export default component$((props: ICustomSelectProps) => {
             background: #28264F;
             border-radius: 3px;
             margin-top: 4px;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
             z-index: 10;
             display: none;
         }
@@ -100,11 +108,17 @@ export default component$((props: ICustomSelectProps) => {
             background-color: transparent;
             border: none;
             transition: background-color 0.2s ease;
+            border-left: 4px solid transparent;
         }
 
-        .menu-item:hover, .menu-item:focus {
-            background-color: rgb(59, 56, 118);
+        .menu-item:focus {
+            border-left-color: rgb(66, 59, 176);
+            background: rgb(56, 54, 93);
             outline: none;
+        }
+
+        .menu-item:hover {
+            background-color: rgb(59, 56, 118);
         }
 
         .fieldset {
@@ -137,19 +151,26 @@ export default component$((props: ICustomSelectProps) => {
         }
     `);
 
+    const existsSelectedValue = useComputed$(() => {
+        return props.options.some((opt) => opt.value === selectedOption.value);
+    });
+
     return (
         <fieldset class="fieldset" style={{
             "--helper-color": props.error ? "tomato" : props.valid ? "mediumseagreen" : "var(--text-color)",
             "--focus-color": props.error ? "tomato" : props.valid ? "mediumseagreen" : "dodgerblue",
             "--input-color": props.error ? "tomato" : props.valid ? "mediumseagreen" : "inherit",
         }}>
-            {props.label && (
+            {props.label ? (
                 <legend class="legend">{props.label}</legend>
+            ) : (
+                <div style={{height: "6px"}}></div>
             )}
             <Box display="flex" alignItems="center" justifyContent="center" mt={-6}>
                 <button
                     class="dropdown"
                     tabIndex={0}
+                    key={labelSelected.value?.value} 
                     ref={dropdownButtonRef}
                     onClick$={() => {
                         isOpen.value = !isOpen.value;
@@ -165,7 +186,9 @@ export default component$((props: ICustomSelectProps) => {
                         isOpen.value = false;
                     }}
                 >
-                    <span>{selectedOption.value || "Selecciona una opción"}</span>
+                    <span style="display: flex; gap: 10px; align-items: center; justify-content: center">
+                        {labelSelected.value?.icon }{labelSelected.value?.label || "Selecciona una opción"}
+                    </span>
                     <span>&#9660;</span>
                 </button>
                 <div
@@ -175,11 +198,13 @@ export default component$((props: ICustomSelectProps) => {
                     {props.options.map((option, index) => (
                         <button
                             key={option.value}
-                            ref={index === 0 ? firstOptionRef : undefined}
+                            ref={(existsSelectedValue.value ? (option.value === selectedOption.value) : (index === 0)) ? firstOptionRef : undefined}
                             class="menu-item"
                             onClick$={() => {
-                                selectedOption.value = option.label;
+                                selectedOption.value = option.value;
                                 isOpen.value = false;
+
+                                if(props.onSelect$) props.onSelect$(option.value);
 
                                 setTimeout(() => dropdownButtonRef.value?.focus(), 0);
                             }}

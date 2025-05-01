@@ -63,17 +63,14 @@ export default component$(() => {
     const lang = useLang(["@route-signin"]);
 
     // Use form
-    const form = useForm({
-        email: '',
-        password: ''
-    }, schema.value);
+    const form = useForm({ email: '', password: '' }, schema);
 
     useVisibleTask$(({track}) => {
         track(lang);
 
         schema.value = noSerialize(makeSchema(lang));
     });
-
+    
     return (
         <Box display="flex" justifyContent="center" alignItems="center" width="100%" height="100vh" class="signin">
             <Card style={{ "min-width": "350px" }}>

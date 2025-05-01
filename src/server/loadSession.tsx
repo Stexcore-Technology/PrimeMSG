@@ -1,5 +1,6 @@
 import { Cookie, RequestEvent } from "@builder.io/qwik-city";
 import authService from "~/services/auth.service";
+import currentSession from "./currentSession";
 
 /**
  * Try to get the current session or redirect to /signin page
@@ -8,19 +9,8 @@ import authService from "~/services/auth.service";
  * @returns User session
  */
 export default async function loadSession(cookie: Cookie, redirect: RequestEvent["redirect"]) {
-    try {
-        const token = cookie.get("TOKEN_SESSION");
+    const session = currentSession(cookie);
 
-        if(token) {
-            const user = await authService.getSessionInfoByToken(token.value);
-
-            return user;
-        }
-    }
-    catch(err) {
-        if(!(err instanceof authService.SessionExpiredError)) {
-            throw err;
-        }
-    }
-    throw redirect(307, "/auth/signin");
+    if(!session) throw redirect(307, "/auth/signin");
+    return session;
 }

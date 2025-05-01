@@ -4,4 +4,4 @@ import { ISessionInfo } from "~/services/auth.service";
 /**
  * User identifier
  */
-export const UserContext = createContextId<ISessionInfo>("prime.msg.user.context");
+export const SessionContext = createContextId<ISessionInfo>("prime.msg.session.context");

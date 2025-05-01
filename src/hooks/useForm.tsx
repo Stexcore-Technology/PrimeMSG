@@ -1,4 +1,4 @@
-import { $, NoSerialize, noSerialize, QRL, QRLEventHandlerMulti, useComputed$, useSignal, useStore, useTask$, useVisibleTask$, implicit$FirstArg } from "@builder.io/qwik";
+import { $, NoSerialize, noSerialize, QRL, QRLEventHandlerMulti, useComputed$, useSignal, useStore, useTask$, useVisibleTask$, implicit$FirstArg, Signal } from "@builder.io/qwik";
 import { z } from "@builder.io/qwik-city";
 
 /**
@@ -9,7 +9,7 @@ import { z } from "@builder.io/qwik-city";
  */
 export function useForm<T extends z.ZodObject<any>>(
   initialData: z.infer<T>,
-  schema?: NoSerialize<T> | undefined,
+  schema?: Signal<NoSerialize<T> | undefined>,
 ) {
   const values = useStore<z.infer<T>>(initialData);
   const errors = useStore<{ [key in keyof z.infer<T>]?: string }>({});
@@ -18,32 +18,36 @@ export function useForm<T extends z.ZodObject<any>>(
   
   useTask$(({ track }) => {
     // Track signals
-    track(() => schema);
+    if(schema) track(schema);
+    else track(() => schema);
     track(values);
     track(touched);
   
-    if (schema) {
-
-      // Clear errors
-      Object.keys(values).forEach((key) => {
-        delete errors[key as keyof T];
-      });
+    if(schema) {
+      if (schema.value) {
   
-      // Validate value using zod
-      const parsed = schema.safeParse(values);
-  
-      if (parsed.success) {
-        // form valid!
-        valid.value = true;
-      } else {
-        // process errors
-        parsed.error.errors.forEach((error) => {
-          const fieldName = error.path[0] as keyof T; // Get key
-          errors[fieldName] = error.message; // associate error message
+        // Clear errors
+        Object.keys(values).forEach((key) => {
+          delete errors[key as keyof T];
         });
-  
-        valid.value = false;
+    
+        // Validate value using zod
+        const parsed = schema.value.safeParse(values);
+    
+        if (parsed.success) {
+          // form valid!
+          valid.value = true;
+        } else {
+          // process errors
+          parsed.error.errors.forEach((error) => {
+            const fieldName = error.path[0] as keyof T; // Get key
+            errors[fieldName] = error.message; // associate error message
+          });
+    
+          valid.value = false;
+        }
       }
+      else valid.value = false;
     }
   });
 
