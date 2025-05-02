@@ -1,4 +1,4 @@
-import { Cookie, RequestEvent } from "@builder.io/qwik-city";
+import { RequestEventBase } from "@builder.io/qwik-city";
 import authService from "~/services/auth.service";
 
 /**
@@ -7,9 +7,9 @@ import authService from "~/services/auth.service";
  * @param redirect Redirect function
  * @returns User session
  */
-export default async function currentSession(cookie: Cookie) {
+export default async function currentSession(ev: RequestEventBase) {
     try {
-        const token = cookie.get("TOKEN_SESSION");
+        const token = ev.cookie.get("TOKEN_SESSION");
 
         if(token) {
             const user = await authService.getSessionInfoByToken(token.value);

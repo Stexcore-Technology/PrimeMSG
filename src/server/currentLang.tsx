@@ -2,12 +2,12 @@ import { RequestEventBase } from "@builder.io/qwik-city";
 import langService from "~/services/lang.service";
 import { ILangType } from "~/types/lang";
 
-export default function getCurrentLang({request, params}: { params: RequestEventBase["params"], request: RequestEventBase["request"] }) {
+export default function getCurrentLang(ev: RequestEventBase) {
     // Accept language
-    const acceptLanguage = request.headers.get("accept-language");
+    const acceptLanguage = ev.request.headers.get("accept-language");
     // preferred
-    const lang = (params["lang"] || langService.getPreferredLanguage(acceptLanguage || "")) as ILangType;
+    const lang = (ev.params["lang"] || langService.getPreferredLanguage(acceptLanguage || "")) as ILangType;
 
     // Language instance
-    return langService.getLangInfo(lang);
+    return { lang: langService.getLangInfo(lang), langType: lang };
 }

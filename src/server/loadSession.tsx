@@ -1,6 +1,7 @@
-import { Cookie, RequestEvent } from "@builder.io/qwik-city";
-import authService from "~/services/auth.service";
+import { RequestEventCommon } from "@builder.io/qwik-city";
 import currentSession from "./currentSession";
+import getCurrentLang from "./currentLang";
+import { ISessionInfo } from "~/services/auth.service";
 
 /**
  * Try to get the current session or redirect to /signin page
@@ -8,9 +9,10 @@ import currentSession from "./currentSession";
  * @param redirect Redirect function
  * @returns User session
  */
-export default async function loadSession(cookie: Cookie, redirect: RequestEvent["redirect"]) {
-    const session = currentSession(cookie);
+export default async function loadSession(ev: RequestEventCommon<QwikCityPlatform>): Promise<ISessionInfo> {
+    const { langType } = getCurrentLang(ev);
+    const session = await currentSession(ev);
 
-    if(!session) throw redirect(307, "/auth/signin");
+    if(!session) throw ev.redirect(307, `/${langType}/auth/signin`);
     return session;
 }

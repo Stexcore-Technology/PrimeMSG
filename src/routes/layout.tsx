@@ -45,10 +45,10 @@ export const onGet: RequestHandler = async ({ cacheControl }) => {
 /**
  * Initialize database connection and get current session
  */
-const useInformation = routeLoader$(async ({cookie}) => {
+const useInformation = routeLoader$(async (ev) => {
     await initConnection();
 
-    return currentSession(cookie);
+    return currentSession(ev);
 });
 
 /**

@@ -1,5 +1,6 @@
-import { JSXOutput } from "@builder.io/qwik";
+import { JSXOutput, Signal, useComputed$ } from "@builder.io/qwik";
 import { AddIcon, ApiIcon, DashboardIcon, InstanceIcon } from "~/icons/icons";
+import useLang from "./useLang";
 
 /**
  * Sidebar menu item
@@ -16,7 +17,7 @@ export interface ISidebarMenuItem {
     /**
      * Label menu
      */
-    label: string,
+    label?: string,
     /**
      * Link href
      */
@@ -81,36 +82,62 @@ export type ISidebarMenu =
  * @returns List menu items
  */
 export default function useSidebarMenu() {
-    const SidebarMenu: ISidebarMenu[] = [
-        {
-            id: "@dashboard",
-            type: "menu",
-            label: "Panel de control",
-            href: "/dashboard/",
-            icon: <DashboardIcon></DashboardIcon>
-        },
-        {
-            id: "@add-instance",
-            type: "menu",
-            label: "Agregar instancia",
-            href: "/dashboard/instance/add/",
-            icon: <AddIcon></AddIcon>
-        },
-        {
-            id: "@instances",
-            type: "menu",
-            label: "Instancias",
-            href: "/dashboard/instance/",
-            icon: <InstanceIcon></InstanceIcon>
-        },
-        {
-            id: "@docs",
-            type: "menu",
-            label: "Documentación",
-            href: "/docs/",
-            icon: <ApiIcon></ApiIcon>
+    const lang = useLang(["@layout-dashboard"]);
+
+    const SidebarMenu: Signal<ISidebarMenu[]> = useComputed$(() => {
+        
+        const menuData: ISidebarMenu[] = [
+            {
+                id: "@dashboard",
+                type: "menu",
+                label: lang["@layout-dashboard"]?.sidebar.dashboard,
+                href: `/dashboard/`,
+                icon: <DashboardIcon></DashboardIcon>
+            },
+            {
+                id: "@add-instance",
+                type: "menu",
+                label: lang["@layout-dashboard"]?.sidebar.add_instance,
+                href: "/dashboard/instance/add/",
+                icon: <AddIcon></AddIcon>
+            },
+            {
+                id: "@instances",
+                type: "menu",
+                label: lang["@layout-dashboard"]?.sidebar.instances,
+                href: "/dashboard/instance/",
+                icon: <InstanceIcon></InstanceIcon>
+            },
+            {
+                id: "@docs",
+                type: "menu",
+                label: lang["@layout-dashboard"]?.sidebar.docs,
+                href: "/docs/",
+                icon: <ApiIcon></ApiIcon>
+            }
+        ];
+
+        const mapItem = (item: ISidebarMenu): ISidebarMenu => {
+            switch(item.type) {
+                case "group":
+                    return {
+                        ...item,
+                        submenu: item.submenu.map(mapItem)
+                    };
+
+                case "menu":
+                    return {
+                        ...item,
+                        href: "/" + lang.langType + "/" + item.href.replace(/^\/+/, "")
+                    };
+
+                default:
+                    return item;
+            }
         }
-    ];
+        
+        return menuData.map(mapItem);
+    });
 
     return SidebarMenu;
 }

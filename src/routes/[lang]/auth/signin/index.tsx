@@ -30,26 +30,28 @@ const makeSchema = function(lang: { "@route-signin"?: ILang["@route-signin"] | u
 /**
  * User login action
  */
-const useLoginAction = routeAction$(async (data, {cookie, redirect, fail}) => {
+const useLoginAction = routeAction$(async (data, ev) => {
     try {
+        // Get current language
+        const { langType } = getCurrentLang(ev);
         // Get session
         const session = await authService.Login(data.email, data.password);
 
         // Set cookie session token
-        cookie.set("TOKEN_SESSION", session.token, { path: "/" });
+        ev.cookie.set("TOKEN_SESSION", session.token, { path: "/" });
         
-        throw redirect(307, "/dashboard");
+        throw ev.redirect(307, `/${langType}/dashboard`);
     }
     catch(err) {
         if(err instanceof authService.UserNotFoundError) {
-            return fail(404, {
+            return ev.fail(404, {
                 message: "Usuario y/o clave inválida",
             });
         }
         else throw err;
     }
 }, zod$((_, ev) => {
-    const lang = getCurrentLang(ev);
+    const {lang} = getCurrentLang(ev);
     return makeSchema(lang);
 }));
 

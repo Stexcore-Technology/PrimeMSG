@@ -45,7 +45,8 @@ const lang: ILang = {
                 placeholder: "usuario@stexcore.com",
                 validations: {
                     email: "Debe ser un correo electrónico válido",
-                    required: "Campo requerido"
+                    required: "Campo requerido",
+                    another_account: "Otra cuenta está usando este correo electrónico"
                 }
             },
             password: {

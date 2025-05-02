@@ -8,6 +8,8 @@ import { component$, isDev } from "@builder.io/qwik";
 import { CheckFillIcon } from "~/icons/icons";
 import { Link } from "@builder.io/qwik-city";
 import { RedirectMessage, ServerError } from "@builder.io/qwik-city/middleware/request-handler";
+import getCurrentLang from "~/server/currentLang";
+import useLang from "~/hooks/useLang";
 
 /**
  * Validate if error is a ServerError
@@ -36,16 +38,17 @@ function isServerError(err: unknown): err is ServerError {
 /**
  * Validate TCP token
  */
-export const onGet: RequestHandler = async ({ params, redirect, cookie }) => {
+export const onGet: RequestHandler = async (ev) => {
     try {
+        const { langType } = getCurrentLang(ev);
         // Get session
-        const session = await authService.AuthorizeRegisterByToken(params.tcp);
+        const session = await authService.AuthorizeRegisterByToken(ev.params.tcp);
         
         // Set token session
-        cookie.set("TOKEN_SESSION", session.token, { path: "/" });
+        ev.cookie.set("TOKEN_SESSION", session.token, { path: "/" });
         
         // Proceed with your logic now that validation is successful
-        throw redirect(308, "/dashboard");
+        throw ev.redirect(308, `/${langType}/dashboard`);
     }
     catch(err) {
         // Validate is expired session
@@ -74,21 +77,23 @@ export const onGet: RequestHandler = async ({ params, redirect, cookie }) => {
  * TCP Expired Page
  */
 export default component$(() => {
+    const lang = useLang(["@route-signup-tcp-expired"]);
+
     return (
         <Box display="flex" justifyContent="center" alignItems="center" width="100%" height="100vh" class="signin">
             <Card style={{ "min-width": "350px", "max-width": "500px" }}>
                 <CardHeader style={{ justifyContent: "center" }}>
                     <CheckFillIcon size="xl" styles={{ color: "red" }}></CheckFillIcon>
-                    Enlace de verificación expirado
+                    {lang["@route-signup-tcp-expired"]?.header}
                 </CardHeader>
                 <Divider></Divider>
                 <CardContent>
                     <p style="text-align: center">
-                        El enlace de verificación que recibiste ha expirado. Por favor, solicita un nuevo enlace para continuar con la verificación de tu cuenta.
+                        {lang["@route-signup-tcp-expired"]?.text}
                     </p>
                     <Box mt={40} display="flex" justifyContent="center">
-                        <Link href="/auth/signin">
-                            <Button type="button" style={{ "min-width": "250px" }}>Ir al inicio</Button>
+                        <Link href={`/${lang}/auth/signin`}>
+                            <Button type="button" style={{ "min-width": "250px" }}>{lang["@route-signup-tcp-expired"]?.button}</Button>
                         </Link>
                     </Box>
                 </CardContent>

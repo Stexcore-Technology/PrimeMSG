@@ -148,6 +148,10 @@ export interface ILangRouteSignup {
                  * Email input
                  */
                 email: string
+                /**
+                 * Already exists another account
+                 */
+                another_account: string
             }
         },
         /**

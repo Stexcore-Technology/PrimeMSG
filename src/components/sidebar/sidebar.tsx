@@ -108,7 +108,7 @@ export default component$(() => {
 
     return (
         <div>
-            {menu.map((menuItem) => (
+            {menu.value.map((menuItem) => (
                 <Item key={menuItem.id} {...menuItem}></Item>
             ))}
         </div>

@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 import User from "~/models/user.model";
 import Session from "~/models/session.model";
 import Instance, { IInstance } from "~/models/instance.model";
+import { ILangType } from "~/types/lang";
 
 /**
  * Session info
@@ -66,7 +67,8 @@ export default new class AuthService {
         data: {
             username: string,
             email: string,
-            password: string
+            password: string,
+            langType: ILangType
         }
     ) {
         // Find user account
@@ -117,7 +119,7 @@ export default new class AuthService {
         await smtpService.sendMail(data.email, {
             template: "tcp-signin",
             username: data.username,
-            link_verification: new URL("/auth/signup/" + encodeURIComponent(token), url).href,
+            link_verification: new URL(`/${data.langType}/auth/signup/` + encodeURIComponent(token), url).href,
         });
     }
 
@@ -178,7 +180,7 @@ export default new class AuthService {
             }
         }
         catch (err) {
-            if(!(err instanceof jwt.TokenExpiredError)) {
+            if(!(err instanceof jwt.TokenExpiredError || err instanceof jwt.JsonWebTokenError)) {
                 throw err;
             }
         }
@@ -249,6 +251,8 @@ export default new class AuthService {
      */
     public async getSessionInfoByToken(token: string) {
 
+        
+        
         // Session info
         const decoded = jwt.verify(token, String(process.env.JWT_KEY)) as {
             version: string,

@@ -5,10 +5,10 @@ import instancesService from "~/services/instances.service";
 /**
  * Add instance using Action
  */
-export const AddInstance = globalAction$(async (data, {cookie, redirect}) => {
+export const AddInstance = globalAction$(async (data, ev) => {
 
     // Load session
-    const session = await loadSession(cookie, redirect);
+    const session = await loadSession(ev);
 
     // Create instance
     const instance = await instancesService.CreateInstance({

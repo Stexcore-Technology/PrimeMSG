@@ -18,7 +18,8 @@ const loadLangSegments = server$(function (this: RequestEventBase, lang: ILangTy
 });
 
 export default function useLang<T extends keyof ILang>(segments: T[]): {[key in T]?: ILang[key]} & {
-    changeLang: QRL<(newLang: keyof ILang) => void>
+    changeLang: QRL<(newLang: keyof ILang) => void>,
+    langType: ILangType
 } {
     const navigate = useNavigate();
     const location = useLocation();
@@ -28,9 +29,11 @@ export default function useLang<T extends keyof ILang>(segments: T[]): {[key in 
     const data = useStore({
         changeLang: $((newLang: keyof ILang) => {
             navigate(location.url.href.replace(`/${location.params.lang}/`, `/${newLang}/`));
-        })
+        }),
+        langType: langType.value
     } as {[key in T]: ILang[key]} & {
-        changeLang: QRL<(newLang: keyof ILang) => void>
+        changeLang: QRL<(newLang: keyof ILang) => void>,
+        langType: ILangType
     });
 
     useTask$(async ({track}) => {
@@ -42,6 +45,8 @@ export default function useLang<T extends keyof ILang>(segments: T[]): {[key in 
         for(const key in segmentsData) {
             data[key as T] = segmentsData[key as T] as any;
         }
+
+        data.langType = langType.value;
     });
     
     return data;
