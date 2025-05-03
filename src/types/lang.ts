@@ -290,6 +290,148 @@ export interface ILangLayoutDashboard {
 }
 
 /**
+ * Lang instance
+ */
+export interface ILangAddInstance {
+    /**
+     * Steps
+     */
+    steps: {
+        /**
+         * Initial step form
+         */
+        initial: {
+            /**
+             * Header initial step
+             */
+            header: string,
+            /**
+             * Form inputs
+             */
+            form: {
+                /**
+                 * Instance name
+                 */
+                instance_name: {
+                    /**
+                     * Label instance name
+                     */
+                    label: string,
+                    /**
+                     * Placeholder instance name
+                     */
+                    placeholder: string,
+                    /**
+                     * Validations instance name
+                     */
+                    validations: {
+                        /**
+                         * Field required
+                         */
+                        required: string,
+                        /**
+                         * Maxlength exceded!
+                         */
+                        max: string
+                    }
+                },
+                /**
+                 * Platform instance
+                 */
+                platform: {
+                    /**
+                     * Label instance
+                     */
+                    label: string,
+                    /**
+                     * Placeholder
+                     */
+                    placeholder: string,
+                    /**
+                     * Options
+                     */
+                    options: {
+                        /**
+                         * Whatsapp platform
+                         */
+                        whatsapp: string,
+                        /**
+                         * Telegram platform
+                         */
+                        telegram: string,
+                        /**
+                         * Sms platform
+                         */
+                        sms: string
+                    }
+                    /**
+                     * Validations
+                     */
+                    validations: {
+                        /**
+                         * Required validation
+                         */
+                        required: string
+                    }
+                },
+                /**
+                 * Next step
+                 */
+                next: string
+            }
+        },
+        /**
+         * Add whatsapp device
+         */
+        sync_whatsapp: {
+            /**
+             * Header whatsapp
+             */
+            header: string,
+            /**
+             * Back button
+             */
+            back: string
+        }
+    }
+}
+
+/**
+ * Create whatsapp instance
+ */
+export interface ILangAddInstanceComponent {
+    /**
+     * Details
+     */
+    details: string,
+    /**
+     * Help steps
+     */
+    help_steps: {
+        /**
+         * Step open whatsapp
+         */
+        step1: string,
+        /**
+         * Step touch menu
+         */
+        step2: string,
+        /**
+         * Touch devices linked
+         */
+        step3: string,
+        /**
+         * scan qr code
+         */
+        step4: string
+    },
+    /**
+     * Link help to link device
+     */
+    need_help_question: string
+}
+
+/**
  * Lang
  */
 export interface ILang {
@@ -297,6 +439,10 @@ export interface ILang {
      * Components
      */
     "@component-lang-button": string,
+    /**
+     * Create whatsapp instance
+     */
+    "@component-create-whatsapp": ILangAddInstanceComponent,
     /**
      * Route login --> /auth/signin
      */
@@ -313,6 +459,10 @@ export interface ILang {
      * Route signup tcp expired --> /auth/signin/tcp/[token]
      */
     "@route-signup-tcp-expired": ILangRouteSignupTcpExpired,
+    /**
+     * Route add device instance --> /dashboard/auth/
+     */
+    "@route-add-instance": ILangAddInstance,
     /**
      * Layout dashboard --> /dashboard/*
      */

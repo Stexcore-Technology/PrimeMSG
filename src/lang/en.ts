@@ -2,6 +2,16 @@ import { ILang } from "~/types/lang";
 
 const lang: ILang = {
     "@component-lang-button": "Language",
+    "@component-create-whatsapp": {
+        details: "Manage and automate operations in one place",
+        help_steps: {
+            step1: "Open WhatsApp on your phone.",
+            step2: "Tap *Menu* $menu on Android or *Settings* $settings on iPhone.",
+            step3: "Tap *Linked Devices*, then *Link a Device*.",
+            step4: "Point your phone at this screen to scan the QR code."
+        },
+        need_help_question: "Need help getting started?"
+    },
     "@route-signin": {
         header: "Log In",
         form: {
@@ -34,7 +44,7 @@ const lang: ILang = {
         form: {
             username: {
                 label: "Username",
-                placeholder: "Carlos Cerdeño",
+                placeholder: "Jane Doe",
                 validations: {
                     min: "A minimum of 4 characters is required",
                     max: "A maximum of 40 characters is required"
@@ -81,6 +91,40 @@ const lang: ILang = {
         header: "Verification Link Expired",
         text: "The verification link you received has expired. Please request a new link to continue verifying your account.",
         button: "Go to Home"
+    },
+    "@route-add-instance": {
+        steps: {
+            initial: {
+                header: "Add Instance",
+                form: {
+                    instance_name: {
+                        label: "Instance Name",
+                        placeholder: "Main Messaging",
+                        validations: {
+                            required: "Required field",
+                            max: "Cannot exceed 40 characters in length"
+                        }
+                    },
+                    platform: {
+                        label: "Platform",
+                        placeholder: "Select a platform",
+                        options: {
+                            whatsapp: "WhatsApp",
+                            telegram: "Telegram",
+                            sms: "SMS Messaging"
+                        },
+                        validations: {
+                            required: "Required field"
+                        }
+                    },
+                    next: "Next"
+                }
+            },
+            sync_whatsapp: {
+                header: "Link Your Device to PrimeMSG",
+                back: "Cancel"
+            }
+        }
     },
     "@layout-dashboard": {
         sidebar: {

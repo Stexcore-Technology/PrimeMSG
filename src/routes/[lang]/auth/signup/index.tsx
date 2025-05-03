@@ -158,7 +158,7 @@ export default component$(() => {
                                 <Button type="submit" disabled={form.value.isInvalid || action.isRunning}>{lang["@route-signup"]?.form.submit}</Button>
                             </Box>
                             <Box style={{textAlign: "center"}}>
-                                ¿Ya tienes una cuenta? <Link href="../signin">Iniciar sesión</Link>
+                                {lang["@route-signup"]?.footer.have_account_question} <Link href="../signin">{lang["@route-signup"]?.footer.login_now}</Link>
                             </Box>
                         </Box>
                     </Form>

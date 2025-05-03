@@ -181,3 +181,21 @@ export const SmsIcon = component$<IIconProps>((props) => (
         <svg xmlns="http://www.w3.org/2000/svg" {...props} viewBox="0 0 26 26"><path fill="currentColor" d="M23 4H3C1.3 4 0 5.3 0 7v12c0 1.7 1.3 3 3 3h20c1.7 0 3-1.3 3-3V7c0-1.7-1.3-3-3-3m.8 15.4L16 13.8l-3 2l-3.1-2l-7.7 5.6l6.3-6.5l-7.7-6L13 13.5L25.1 7l-7.6 6z" stroke-width="0.2" stroke="#d5d5d5"/></svg>
     ))
 ))
+
+/**
+ * Menu vertical Icon
+ */
+export const MenuVerticalIcon = component$<IIconProps>((props) => (
+    Icon(props, (props) => (
+        <svg xmlns="http://www.w3.org/2000/svg" {...props} viewBox="0 0 21 21"><g fill="currentColor" fill-rule="evenodd" stroke-width="0.2" stroke="#d5d5d5"><circle cx="10.5" cy="10.5" r="1"/><circle cx="10.5" cy="5.5" r="1"/><circle cx="10.5" cy="15.5" r="1"/></g></svg>
+    ))
+))
+
+/**
+ * Ios settings Icon
+ */
+export const IosSettingsIcon = component$<IIconProps>((props) => (
+    Icon(props, (props) => (
+        <svg xmlns="http://www.w3.org/2000/svg" {...props} viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"><path d="M12 18a6 6 0 1 0 0-12a6 6 0 0 0 0 12m6-6h-6M9 6.803L12 12m0 0l-3 5.197"/><path stroke-dasharray="1 3" d="M12 19a7 7 0 1 0 0-14a7 7 0 0 0 0 14"/><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2S2 6.477 2 12s4.477 10 10 10"/><path d="M12 15a3 3 0 1 0 0-6a3 3 0 0 0 0 6"/></g></svg>
+    ))
+))
