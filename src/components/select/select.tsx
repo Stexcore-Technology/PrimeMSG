@@ -10,6 +10,10 @@ type ICustomSelectProps = {
      */
     label?: string;
     /**
+     * Placeholder
+     */
+    placeholder?: string
+    /**
      * Options
      */
     options: {
@@ -187,7 +191,7 @@ export default component$((props: ICustomSelectProps) => {
                     }}
                 >
                     <span style="display: flex; gap: 10px; align-items: center; justify-content: center">
-                        {labelSelected.value?.icon }{labelSelected.value?.label || "Selecciona una opción"}
+                        {labelSelected.value?.icon }{labelSelected.value?.label || props.placeholder || "Select some option"}
                     </span>
                     <span>&#9660;</span>
                 </button>

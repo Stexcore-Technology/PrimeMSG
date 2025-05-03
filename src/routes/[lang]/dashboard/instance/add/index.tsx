@@ -26,7 +26,8 @@ export default component$(() => {
                                 placeholder={lang["@route-add-instance"]?.steps.initial.form.instance_name.placeholder}
                             ></Input>
                             <Select
-                                label="Plataforma"
+                                label={lang["@route-add-instance"]?.steps.initial.form.platform.label}
+                                placeholder={lang["@route-add-instance"]?.steps.initial.form.platform.placeholder}
                                 options={[
                                     {
                                         label: lang["@route-add-instance"]?.steps.initial.form.platform.options.whatsapp || "",

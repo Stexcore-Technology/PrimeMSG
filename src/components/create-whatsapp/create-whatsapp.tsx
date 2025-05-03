@@ -4,6 +4,7 @@ import useLang from "~/hooks/useLang";
 import RichText from "../rich-text/rich-text";
 import { IosSettingsIcon, MenuVerticalIcon } from "~/icons/icons";
 import Qrcode from "../qrcode/qrcode";
+import { Link } from "@builder.io/qwik-city";
 
 export default component$(() => {
     const lang = useLang(["@component-create-whatsapp"]);
@@ -62,6 +63,11 @@ export default component$(() => {
                             <RichText text={lang["@component-create-whatsapp"]?.help_steps.step4 || ""}/>
                         </li>
                     </ol>
+                </Box>
+                <Box mb={30}>
+                    <Link href={`https://faq.whatsapp.com/1317564962315842/?cms_platform=web&lang=${lang.langType}`}>
+                        {lang["@component-create-whatsapp"]?.need_help_question}
+                    </Link>
                 </Box>
             </Box>
             <Box>
