@@ -9,6 +9,7 @@ interface QRCodeProps {
 export default component$(({ value, size = 128 }: QRCodeProps) => {
   const canvasRef = useSignal<HTMLCanvasElement>();
 
+  // eslint-disable-next-line qwik/no-use-visible-task
   useVisibleTask$(({ track }) => {
     track(() => value); // Regenerar QR cuando cambie el valor
     if (canvasRef.value) {

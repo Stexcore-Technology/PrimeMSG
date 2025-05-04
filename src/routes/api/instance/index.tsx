@@ -1,9 +1,9 @@
-import { RequestHandler } from "@builder.io/qwik-city";
+import type { RequestHandler } from "@builder.io/qwik-city";
 
-export const onGet: RequestHandler = ({ }) => {
+export const onGet: RequestHandler = () => {
     
 };
 
-export const onPost: RequestHandler = ({ }) => {
+export const onPost: RequestHandler = () => {
 
 };

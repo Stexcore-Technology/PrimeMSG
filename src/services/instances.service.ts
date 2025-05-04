@@ -22,7 +22,7 @@ export default new class InstancesService {
         // Instances Info
         return instances.map((instanceItem) => (
             instanceItem.toJSON()
-        ));;
+        ));
     }
 
     /**

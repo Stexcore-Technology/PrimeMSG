@@ -1,4 +1,4 @@
-import { RequestHandler } from "@builder.io/qwik-city";
+import type { RequestHandler } from "@builder.io/qwik-city";
 import authService from "~/services/auth.service";
 import Box from "~/components/box/box";
 import Divider from "~/components/divider/divider";

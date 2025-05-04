@@ -1,4 +1,4 @@
-import { CSSProperties } from "@builder.io/qwik";
+import type { CSSProperties } from "@builder.io/qwik";
 
 export default {
 

@@ -1,4 +1,4 @@
-import { component$, IntrinsicHTMLElements, Slot, useStylesScoped$ } from "@builder.io/qwik";
+import { component$, type IntrinsicHTMLElements, Slot, useStylesScoped$ } from "@builder.io/qwik";
 import Box from "../box/box";
 
 /**

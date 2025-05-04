@@ -3,11 +3,11 @@ import Divider from "~/components/divider/divider";
 import Input from "~/components/input/input";
 import Button from "~/components/button/button";
 import Card, { CardContent, CardHeader } from "~/components/card/card";
-import { component$, noSerialize, NoSerialize, useSignal, useVisibleTask$ } from "@builder.io/qwik";
+import { component$, noSerialize, type NoSerialize, useSignal, useVisibleTask$ } from "@builder.io/qwik";
 import { MailIcon, SecurityIcon, UserIcon } from "~/icons/icons";
 import { Form, Link, routeAction$, z, zod$ } from "@builder.io/qwik-city";
 import authService from "~/services/auth.service";
-import { ILang } from "~/types/lang";
+import type { ILang } from "~/types/lang";
 import getCurrentLang from "~/server/currentLang";
 import { useForm } from "~/hooks/useForm";
 import useLang from "~/hooks/useLang";
@@ -18,24 +18,24 @@ import useLang from "~/hooks/useLang";
 const makeSchema = function(lang: { "@route-signup"?: ILang["@route-signup"] | undefined }) {
     return z.object({
         name: z.string()
-            .min(4, "Se requiere mínimo 4 carácteres")
-            .max(40, "Se requiere máximo 40 carácteres"),
+            .min(4, lang["@route-signup"]?.form.username.validations.min)
+            .max(40, lang["@route-signup"]?.form.username.validations.max),
         email: z.string()
-            .min(1, "Campo requerido")
-            .email("Debe ser un correo electrónico válido"),
+            .min(1, lang["@route-signup"]?.form.email.validations.required)
+            .email(lang["@route-signup"]?.form.email.validations.email),
         password: z.string()
-            .min(8, "Se requiere mínimo 8 carácteres")
-            .max(40, "Se requiere máximo 40 carácteres"),
+            .min(8, lang["@route-signup"]?.form.password.validations.min)
+            .max(40, lang["@route-signup"]?.form.password.validations.max),
         confirm_password: z.string()
-            .min(8, "Se requiere mínimo 8 carácteres")
-            .max(40, "Se requiere máximo 40 carácteres")
+            .min(8, lang["@route-signup"]?.form.confirm_password.validations.min)
+            .max(40, lang["@route-signup"]?.form.confirm_password.validations.max)
     });
 };
 
 /**
  * Send TCP code to email to validate new account
  */
-const useSignupAction = routeAction$(
+export const useSignupAction = routeAction$(
     async (data, ev) => {
         try {
             const { langType } = getCurrentLang(ev);
@@ -79,6 +79,7 @@ export default component$(() => {
         confirm_password: '',
     }, schema);
 
+    // eslint-disable-next-line qwik/no-use-visible-task
     useVisibleTask$(({track}) => {
         track(lang);
         schema.value = noSerialize(makeSchema(lang));

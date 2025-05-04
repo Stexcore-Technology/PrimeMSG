@@ -1,4 +1,4 @@
-import { component$, HTMLAttributes, Slot, useStylesScoped$ } from "@builder.io/qwik";
+import { component$, type HTMLAttributes, Slot, useStylesScoped$ } from "@builder.io/qwik";
 
 /**
  * Card content

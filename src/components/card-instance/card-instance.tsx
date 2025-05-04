@@ -1,5 +1,5 @@
 import { component$, useStylesScoped$ } from "@builder.io/qwik";
-import { IInstance } from "~/models/instance.model";
+import type { IInstance } from "~/models/instance.model";
 
 /**
  * Card instance componente

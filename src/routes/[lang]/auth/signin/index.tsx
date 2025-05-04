@@ -1,4 +1,4 @@
-import { component$, noSerialize, NoSerialize, useSignal, useVisibleTask$ } from "@builder.io/qwik";
+import { component$, noSerialize, type NoSerialize, useSignal, useVisibleTask$ } from "@builder.io/qwik";
 import Card, { CardContent, CardHeader } from "~/components/card/card";
 import Box from "~/components/box/box";
 import Divider from "~/components/divider/divider";
@@ -10,7 +10,7 @@ import { Form, Link, routeAction$, z, zod$ } from "@builder.io/qwik-city";
 import authService from "~/services/auth.service";
 import useLang from "~/hooks/useLang";
 import getCurrentLang from "~/server/currentLang";
-import { ILang } from "~/types/lang";
+import type { ILang } from "~/types/lang";
 import LangButton from "~/components/lang-button/lang-button";
 
 /**
@@ -30,7 +30,7 @@ const makeSchema = function(lang: { "@route-signin"?: ILang["@route-signin"] | u
 /**
  * User login action
  */
-const useLoginAction = routeAction$(async (data, ev) => {
+export const useLoginAction = routeAction$(async (data, ev) => {
     try {
         // Get current language
         const { langType } = getCurrentLang(ev);
@@ -67,6 +67,7 @@ export default component$(() => {
     // Use form
     const form = useForm({ email: '', password: '' }, schema);
 
+    // eslint-disable-next-line qwik/no-use-visible-task
     useVisibleTask$(({track}) => {
         track(lang);
 

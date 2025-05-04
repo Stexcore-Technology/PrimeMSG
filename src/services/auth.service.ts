@@ -3,8 +3,8 @@ import smtpService from "./smtp.service";
 import jwt from "jsonwebtoken";
 import User from "~/models/user.model";
 import Session from "~/models/session.model";
-import Instance, { IInstance } from "~/models/instance.model";
-import { ILangType } from "~/types/lang";
+import Instance, { type IInstance } from "~/models/instance.model";
+import type { ILangType } from "~/types/lang";
 
 /**
  * Session info

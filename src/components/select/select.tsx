@@ -1,4 +1,4 @@
-import { component$, useSignal, useStylesScoped$, JSXOutput, QRL, useComputed$ } from "@builder.io/qwik";
+import { component$, useSignal, useStylesScoped$, type JSXOutput, type QRL, useComputed$ } from "@builder.io/qwik";
 import Box from "../box/box";
 
 /**

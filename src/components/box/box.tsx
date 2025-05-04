@@ -1,4 +1,4 @@
-import { component$, CSSProperties, IntrinsicElements, Slot } from "@builder.io/qwik";
+import { component$, type CSSProperties, type IntrinsicElements, Slot } from "@builder.io/qwik";
 import styleUtil from "~/utils/style.util";
 
 /**

@@ -1,4 +1,4 @@
-import { JSXOutput, Signal, useComputed$ } from "@builder.io/qwik";
+import { type JSXOutput, type Signal, useComputed$ } from "@builder.io/qwik";
 import { AddIcon, ApiIcon, DashboardIcon, InstanceIcon } from "~/icons/icons";
 import useLang from "./useLang";
 

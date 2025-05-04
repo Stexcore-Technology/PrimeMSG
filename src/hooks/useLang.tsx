@@ -1,7 +1,7 @@
-import { $, QRL, useComputed$, useStore, useTask$ } from "@builder.io/qwik";
-import { RequestEventBase, server$, useLocation, useNavigate } from "@builder.io/qwik-city";
+import { $, type QRL, useComputed$, useStore, useTask$ } from "@builder.io/qwik";
+import { type RequestEventBase, server$, useLocation, useNavigate } from "@builder.io/qwik-city";
 import langService from "~/services/lang.service";
-import { ILang, ILangType } from "~/types/lang";
+import type { ILang, ILangType } from "~/types/lang";
 
 const loadLangSegments = server$(function (this: RequestEventBase, lang: ILangType, segments: (keyof ILang)[]) {
     // Get lang info

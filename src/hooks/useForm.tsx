@@ -1,5 +1,13 @@
-import { $, NoSerialize, noSerialize, QRL, QRLEventHandlerMulti, useComputed$, useSignal, useStore, useTask$, useVisibleTask$, implicit$FirstArg, Signal } from "@builder.io/qwik";
-import { z } from "@builder.io/qwik-city";
+import { 
+  $, 
+  type NoSerialize, 
+  type Signal,
+  useComputed$, 
+  useSignal, 
+  useStore, 
+  useTask$, 
+} from "@builder.io/qwik";
+import type { z } from "@builder.io/qwik-city";
 
 /**
  * Use form hook
@@ -58,11 +66,11 @@ export function useForm<T extends z.ZodObject<any>>(
   });
   
 
-  const onChange$: QRLEventHandlerMulti<Event, HTMLInputElement> = $((_ev, currentTarget) => {
+  const onChange$: any = $((_ev: any, currentTarget: any) => {
     values[currentTarget.name as keyof T] = currentTarget.value as any;
   });
 
-  const onBlur$: QRLEventHandlerMulti<FocusEvent, HTMLInputElement> = $((_ev, currentTarget) => {
+  const onBlur$: any = $((_ev: any, currentTarget: any) => {
     touched[currentTarget.name as keyof T] = true;
   });
 

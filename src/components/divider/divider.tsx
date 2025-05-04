@@ -1,4 +1,4 @@
-import { component$, HTMLAttributes, useStylesScoped$ } from "@builder.io/qwik";
+import { component$, type HTMLAttributes, useStylesScoped$ } from "@builder.io/qwik";
 
 /**
  * Divider component

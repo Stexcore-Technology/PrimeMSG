@@ -1,4 +1,4 @@
-import { component$, JSX, useComputed$ } from "@builder.io/qwik";
+import { component$, type JSX, useComputed$ } from "@builder.io/qwik";
 
 interface RichTextProps {
   text: string;
@@ -7,7 +7,7 @@ interface RichTextProps {
 
 // Función para escapar caracteres especiales y que la regex funcione bien
 const escapeRegex = (str: string) =>
-  str.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&");
+  str.replace(/[-/\\^$*+?.()|[\]{}]/g, "\\$&");
 
 export default component$(({ text, replacements = {} }: RichTextProps) => {
   
@@ -17,7 +17,7 @@ export default component$(({ text, replacements = {} }: RichTextProps) => {
     .join("|");
   
     const regex = new RegExp(`(\\*[^*]+\\*)|${replacementKeys}`, "g");
-    return text.split(regex).filter((segment) => segment !== undefined && segment !== "");
+    return text.split(regex).filter((segment: string) => segment !== "");
   });
   
 

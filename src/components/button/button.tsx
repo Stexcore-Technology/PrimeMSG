@@ -1,4 +1,4 @@
-import { component$, IntrinsicElements, Slot, useStylesScoped$ } from "@builder.io/qwik";
+import { component$, type IntrinsicElements, Slot, useStylesScoped$ } from "@builder.io/qwik";
 
 /**
  * Button component

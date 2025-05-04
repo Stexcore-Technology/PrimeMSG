@@ -1,4 +1,4 @@
-import { ILang } from "~/types/lang";
+import type { ILang } from "~/types/lang";
 
 const lang: ILang = {
     "@component-lang-button": "Language",

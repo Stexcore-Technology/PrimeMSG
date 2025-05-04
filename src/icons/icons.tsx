@@ -1,4 +1,4 @@
-import { component$, CSSProperties, JSXOutput } from "@builder.io/qwik";
+import { component$, type CSSProperties, type JSXOutput } from "@builder.io/qwik";
 
 /**
  * Icon props
@@ -30,7 +30,7 @@ function Icon({ size: sizeIcon = "lg", class: className, styles }: IIconProps, c
         sizeIcon === "md" ? 16 :
         sizeIcon === "lg" ? 24 :
         sizeIcon === "xl" ? 32 :
-        sizeIcon === "xxl" ? 48 : 62
+        48
     );
     
     /**

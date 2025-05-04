@@ -1,6 +1,6 @@
 import { component$, useStylesScoped$ } from "@builder.io/qwik";
 import { Link, useLocation } from "@builder.io/qwik-city";
-import useSidebarMenu, { ISidebarMenu, ISidebarMenuGroup, ISidebarMenuItem, ISidebarMenuSeparator } from "~/hooks/useSidebarMenu";
+import useSidebarMenu, { type ISidebarMenu, type ISidebarMenuGroup, type ISidebarMenuItem, type ISidebarMenuSeparator } from "~/hooks/useSidebarMenu";
 import Divider from "../divider/divider";
 
 /**
@@ -57,7 +57,7 @@ const MenuItem = component$((props: ISidebarMenuItem) => {
 /**
  * Separator component
  */
-const SeparatorItem = component$((props: ISidebarMenuSeparator) => {
+const SeparatorItem = component$<ISidebarMenuSeparator>(() => {
     return (
         <Divider></Divider>
     );

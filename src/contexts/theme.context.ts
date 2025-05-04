@@ -8,4 +8,4 @@ interface IThemeContext {
     }
 }
 
-export const themeContext = createContextId("prime.msg.theme.context");
+export const themeContext = createContextId<IThemeContext>("prime.msg.theme.context");
