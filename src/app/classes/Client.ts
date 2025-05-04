@@ -26,6 +26,12 @@ export default abstract class Client {
          */
         callback: (...args: any[]) => void
     }[] = [];
+
+    /**
+     * Initialize client
+     * @param platform Platform client
+     */
+    constructor(public readonly platform: string) { }
     
     /**
      * Initialize instance
@@ -43,6 +49,12 @@ export default abstract class Client {
      */
     public addEventListenner(event: "initializing", callback: () => void): number;
     /**
+     * Append event listenner to qr event
+     * @param event Qr event
+     * @param callback Callback method
+     */
+    public addEventListenner(event: "qr", callback: (qrcode: string) => void): number;
+    /**
      * Append event listenner to syncronizing event
      * @param event Syncronizing event
      * @param callback Callback method
@@ -54,6 +66,12 @@ export default abstract class Client {
      * @param callback Callback method
      */
     public addEventListenner(event: "initialized", callback: () => void): number;
+    /**
+     * Append event listenner to general event
+     * @param event event to listen
+     * @param callback Callback method
+     */
+    public addEventListenner(event: string, callback: (...args: any[]) => void): number
     /**
      * Handle the logic to append listenner
      * @param event event to listen
