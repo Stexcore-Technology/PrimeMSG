@@ -2,7 +2,6 @@ import { component$, Slot, useContextProvider } from "@builder.io/qwik";
 import type { ILangType } from "~/types/lang";
 import { routeLoader$, type RequestHandler } from "@builder.io/qwik-city";
 import langService from "~/services/lang.service";
-import initConnection from "~/database/init.connection";
 import currentSession from "~/server/currentSession";
 import { SessionContext } from "~/contexts/session.context";
 
@@ -46,8 +45,6 @@ export const onGet: RequestHandler = async ({ cacheControl }) => {
  * Initialize database connection and get current session
  */
 export const useInformation = routeLoader$(async (ev) => {
-    await initConnection();
-
     return currentSession(ev);
 });
 
