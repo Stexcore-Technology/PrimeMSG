@@ -38,6 +38,10 @@ export interface IResponse<T> {
      */
     statusCode: number,
     /**
+     * Ok status
+     */
+    ok: boolean,
+    /**
      * Headers response
      */
     headers: Headers,
@@ -73,12 +77,47 @@ export interface IRequestOptionsDelete extends IRequestOptionsBody { }
 export default new class httpService {
 
     /**
+     * Request error
+     */
+    public readonly RequestError = class RequestError<T> extends Error implements IResponse<T> {
+        
+        /**
+         * Constructor requests
+         * @param statusCode Status code
+         * @param ok Ok status
+         * @param headers Headers
+         * @param data Data status
+         */
+        constructor(
+            /**
+             * Status code
+             */
+            public statusCode: number,
+            /**
+             * Ok status
+             */
+            public ok: boolean,
+            /**
+             * Headers response
+             */
+            public headers: Headers,
+            /**
+             * Data result
+             */
+            public data: T
+        ) {
+            super("Request failed with '" + statusCode + "' status!");
+        }
+        
+    }
+
+    /**
      * Send a request HTTP to some server
      * @param url Url or path relative to backend
      * @param options Options request
      * @returns Response request
      */
-    public async request<T>(url: string | URL, options: IRequestOptions): Promise<IResponse<T>> {
+    public async request<T = any>(url: string | URL, options: IRequestOptions): Promise<IResponse<T>> {
 
         // Body data
         const body = "data" in options ? (options.data ?? null) : null;
@@ -117,14 +156,27 @@ export default new class httpService {
         }
 
         // Response info
-        return {
+        const responseInfo: IResponse<T> = {
             // Status code
             statusCode: response.status,
             // Headers
             headers: response.headers,
             // Data result
-            data: data
+            data: data,
+            // Ok status
+            ok: response.ok
         };
+
+        // Ok response info
+        if(responseInfo.ok) {
+            return responseInfo
+        }
+        else throw new this.RequestError(
+            responseInfo.statusCode,
+            responseInfo.ok,
+            responseInfo.headers,
+            responseInfo.data
+        );
     }
 
     /**
@@ -133,8 +185,8 @@ export default new class httpService {
      * @param options Options
      * @returns Response
      */
-    public async get(url: string | URL, options?: IRequestOptionsGet) {
-        return this.request(url, {
+    public async get<T = any>(url: string | URL, options?: IRequestOptionsGet) {
+        return this.request<T>(url, {
             ...options,
             method: "GET"
         });
@@ -146,8 +198,8 @@ export default new class httpService {
      * @param options Options
      * @returns Response
      */
-    public async post(url: string | URL, options?: IRequestOptionsPost) {
-        return this.request(url, {
+    public async post<T = any>(url: string | URL, options?: IRequestOptionsPost) {
+        return this.request<T>(url, {
             ...options,
             method: "POST"
         });
@@ -159,8 +211,8 @@ export default new class httpService {
      * @param options Options
      * @returns Response
      */
-    public async put(url: string | URL, options?: IRequestOptionsPut) {
-        return this.request(url, {
+    public async put<T = any>(url: string | URL, options?: IRequestOptionsPut) {
+        return this.request<T>(url, {
             ...options,
             method: "PUT"
         });
@@ -172,8 +224,8 @@ export default new class httpService {
      * @param options Options
      * @returns Response
      */
-    public async delete(url: string | URL, options?: IRequestOptionsDelete) {
-        return this.request(url, {
+    public async delete<T = any>(url: string | URL, options?: IRequestOptionsDelete) {
+        return this.request<T>(url, {
             ...options,
             method: "DELETE"
         });
