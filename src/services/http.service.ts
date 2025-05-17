@@ -1,7 +1,7 @@
 /**
  * Request options base
  */
-interface IRequestOptionsBase {
+export interface IRequestOptionsBase {
     /**
      * Headers init data
      */
@@ -15,7 +15,7 @@ interface IRequestOptionsBase {
 /**
  * Request options with body
  */
-interface IRequestOptionsBody extends IRequestOptionsBase {
+export interface IRequestOptionsBody extends IRequestOptionsBase {
     /**
      * Data (JSON) to send into body
      */
@@ -25,17 +25,14 @@ interface IRequestOptionsBody extends IRequestOptionsBase {
 /**
  * IRequest options
  */
-interface IRequestOptions extends IRequestOptionsBody {
-    /**
-     * Method to send request HTTP
-     */
-    method: "GET" | "POST" | "PUT" | "DELETE"
-}
+export type IRequestOptions = 
+    | ({ method: "POST" | "PUT" | "DELETE" } & IRequestOptionsBody)
+    | ({ method: "GET" } & IRequestOptionsBase)
 
 /**
  * Response interface
  */
-interface IResponse<T> {
+export interface IResponse<T> {
     /**
      * Status code
      */
@@ -50,6 +47,29 @@ interface IResponse<T> {
     data: T
 }
 
+/**
+ * Request options using method GET
+ */
+export interface IRequestOptionsGet extends IRequestOptionsBase { }
+
+/**
+ * Request options using method POST
+ */
+export interface IRequestOptionsPost extends IRequestOptionsBody { }
+
+/**
+ * Request options using method PUT
+ */
+export interface IRequestOptionsPut extends IRequestOptionsBody { }
+
+/**
+ * Request options using method DELETE
+ */
+export interface IRequestOptionsDelete extends IRequestOptionsBody { }
+
+/**
+ * Http Service
+ */
 export default new class httpService {
 
     /**
@@ -61,7 +81,7 @@ export default new class httpService {
     public async request<T>(url: string | URL, options: IRequestOptions): Promise<IResponse<T>> {
 
         // Body data
-        const body = options?.data ?? null;
+        const body = "data" in options ? (options.data ?? null) : null;
 
         // Headers
         const headers = new Headers(options.headers);
@@ -105,6 +125,58 @@ export default new class httpService {
             // Data result
             data: data
         };
+    }
+
+    /**
+     * Send a request using GET method
+     * @param url Url Request
+     * @param options Options
+     * @returns Response
+     */
+    public async get(url: string | URL, options?: IRequestOptionsGet) {
+        return this.request(url, {
+            ...options,
+            method: "GET"
+        });
+    }
+
+    /**
+     * Send a request using POST method
+     * @param url Url Request
+     * @param options Options
+     * @returns Response
+     */
+    public async post(url: string | URL, options?: IRequestOptionsPost) {
+        return this.request(url, {
+            ...options,
+            method: "POST"
+        });
+    }
+
+    /**
+     * Send a request using PUT method
+     * @param url Url Request
+     * @param options Options
+     * @returns Response
+     */
+    public async put(url: string | URL, options?: IRequestOptionsPut) {
+        return this.request(url, {
+            ...options,
+            method: "PUT"
+        });
+    }
+
+    /**
+     * Send a request using DELETE method
+     * @param url Url Request
+     * @param options Options
+     * @returns Response
+     */
+    public async delete(url: string | URL, options?: IRequestOptionsDelete) {
+        return this.request(url, {
+            ...options,
+            method: "DELETE"
+        });
     }
     
 }
