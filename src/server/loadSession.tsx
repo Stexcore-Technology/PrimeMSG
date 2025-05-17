@@ -1,7 +1,7 @@
 import { RequestEventCommon } from "@builder.io/qwik-city";
 import currentSession from "./currentSession";
 import getCurrentLang from "./currentLang";
-import { ISessionInfo } from "~/services/auth.service";
+import { ISessionInfo } from "~/types/session";
 
 /**
  * Try to get the current session or redirect to /signin page

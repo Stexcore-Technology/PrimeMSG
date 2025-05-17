@@ -10,6 +10,7 @@ import { Link } from "@builder.io/qwik-city";
 import { RedirectMessage, ServerError } from "@builder.io/qwik-city/middleware/request-handler";
 import getCurrentLang from "~/server/currentLang";
 import useLang from "~/hooks/useLang";
+import httpService from "~/services/http.service";
 
 /**
  * Validate if error is a ServerError
@@ -45,14 +46,14 @@ export const onGet: RequestHandler = async (ev) => {
         const session = await authService.AuthorizeRegisterByToken(ev.params.tcp);
         
         // Set token session
-        ev.cookie.set("TOKEN_SESSION", session.token, { path: "/" });
+        ev.cookie.set("TOKEN_SESSION", session.data.data.token, { path: "/" });
         
         // Proceed with your logic now that validation is successful
         throw ev.redirect(308, `/${langType}/dashboard`);
     }
     catch(err) {
         // Validate is expired session
-        const isExpired = err instanceof authService.SessionExpiredError;
+        const isExpired = err instanceof httpService.RequestError && err.statusCode === 401;
         
         if(!isExpired) {
             // Validate server Error

@@ -1,5 +1,5 @@
 import { createContextId } from "@builder.io/qwik";
-import type { ISessionInfo } from "~/services/auth.service";
+import { ISessionInfo } from "~/types/session";
 
 /**
  * User identifier

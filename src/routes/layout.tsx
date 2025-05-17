@@ -10,13 +10,23 @@ import { SessionContext } from "~/contexts/session.context";
  */
 const languages: ILangType[] = ["es", "en"];
 
+const ignoreStatic = [
+  "/assets/",
+  "/favicon.svg",
+  "/manifest.json",
+  "quicksand.ttf",
+  "robots.txt"
+];
+
 /**
  * Handle current language
  */
 export const onRequest: RequestHandler = async ({ request, redirect, url, params }) => {
 
+  const isStatic = ignoreStatic.some((item) => url.href.startsWith(item));
+  
   // Validate current lang  
-  if(!languages.includes(String(params.lang) as ILangType)) {
+  if(!isStatic && !languages.includes(String(params.lang) as ILangType)) {
     // Accept language
     const acceptLanguage = request.headers.get("accept-language");
     // preferred

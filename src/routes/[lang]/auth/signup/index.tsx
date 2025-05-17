@@ -11,6 +11,7 @@ import type { ILang } from "~/types/lang";
 import getCurrentLang from "~/server/currentLang";
 import { useForm } from "~/hooks/useForm";
 import useLang from "~/hooks/useLang";
+import httpService from "~/services/http.service";
 
 /**
  * Schema object
@@ -50,7 +51,7 @@ export const useSignupAction = routeAction$(
             throw ev.redirect(307, `/${langType}/auth/signup/tcp-sended`);
         }
         catch(err) {
-            if(err instanceof authService.ExistsAccountError) {
+            if(err instanceof httpService.RequestError && err.statusCode === 409) {
                 return ev.fail(409, {
                     message: "Already exists another account"
                 });

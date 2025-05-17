@@ -3,8 +3,6 @@ import useLang from "~/hooks/useLang";
 import type { ILang } from "~/types/lang";
 import Select from "../select/select";
 import { useLocation } from "@builder.io/qwik-city";
-import ImgEs from "../../../public/icons/es.png?jsx";
-import ImgEn from "../../../public/icons/en.png?jsx";
 
 export default component$(() => {
     const location = useLocation();
@@ -19,12 +17,12 @@ export default component$(() => {
                 {
                     value: "es",
                     label: "Español",
-                    icon: <ImgEs style={{width:16, height:16}}></ImgEs>
+                    icon: <img src="/assets/icons/es.png" style={{width:16, height:16}}/>
                 },
                 {
                     value: "en",
                     label: "Inglés",
-                    icon: <ImgEn style={{width:16, height:16}}></ImgEn>
+                    icon: <img src="/assets/icons/en.png" style={{width:16, height:16}}/>
                 }
             ]}
         >

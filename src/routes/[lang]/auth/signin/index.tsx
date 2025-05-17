@@ -12,6 +12,7 @@ import useLang from "~/hooks/useLang";
 import getCurrentLang from "~/server/currentLang";
 import type { ILang } from "~/types/lang";
 import LangButton from "~/components/lang-button/lang-button";
+import httpService from "~/services/http.service";
 
 /**
  * Schema zod
@@ -38,17 +39,21 @@ export const useLoginAction = routeAction$(async (data, ev) => {
         const session = await authService.Login(data.email, data.password);
 
         // Set cookie session token
-        ev.cookie.set("TOKEN_SESSION", session.token, { path: "/" });
+        ev.cookie.set("TOKEN_SESSION", session.data.data.token, { path: "/" });
         
         throw ev.redirect(307, `/${langType}/dashboard`);
     }
     catch(err) {
-        if(err instanceof authService.UserNotFoundError) {
-            return ev.fail(404, {
-                message: "Usuario y/o clave inválida",
-            });
+        // RequestError
+        if(err instanceof httpService.RequestError) {
+            // Validate is not found
+            if(err.statusCode === 404) {
+                return ev.fail(404, {
+                    message: "Usuario y/o clave inválida",
+                });
+            }
         }
-        else throw err;
+        throw err;
     }
 }, zod$((_, ev) => {
     const {lang} = getCurrentLang(ev);
